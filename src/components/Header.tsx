@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { GraduationCap, Menu, X, Bell, User } from 'lucide-react';
+import { Menu, X, Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import kristuJayantiLogo from '@/assets/kristu-jayanti-logo.png';
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,14 +11,12 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-lg text-foreground leading-tight">Kristu Jayanti</span>
-              <span className="text-xs text-muted-foreground leading-tight">University Events</span>
-            </div>
+          <div className="flex items-center gap-3">
+            <img 
+              src={kristuJayantiLogo} 
+              alt="Kristu Jayanti University" 
+              className="h-12 w-auto"
+            />
           </div>
 
           {/* Desktop Navigation */}

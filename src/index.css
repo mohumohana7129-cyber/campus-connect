@@ -45,6 +45,13 @@
     --event-sports: 142 71% 45%;
     --event-seminar: 38 92% 50%;
 
+    /* Header colors */
+    --header-dark: 210 29% 15%;
+    --header-text: 210 40% 98%;
+    --header-muted: 210 20% 70%;
+    --header-accent: 32 95% 55%;
+    --header-border: 210 25% 22%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;

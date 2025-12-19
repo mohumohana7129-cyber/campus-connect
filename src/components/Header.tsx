@@ -15,8 +15,8 @@ const Header = () => {
               <GraduationCap className="w-6 h-6 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg text-foreground leading-tight">CampusHub</span>
-              <span className="text-xs text-muted-foreground leading-tight">Event Aggregator</span>
+              <span className="font-bold text-lg text-foreground leading-tight">Kristu Jayanti</span>
+              <span className="text-xs text-muted-foreground leading-tight">University Events</span>
             </div>
           </div>
 

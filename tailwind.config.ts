@@ -67,6 +67,13 @@ export default {
           sports: "hsl(var(--event-sports))",
           seminar: "hsl(var(--event-seminar))",
         },
+        header: {
+          dark: "hsl(var(--header-dark))",
+          text: "hsl(var(--header-text))",
+          muted: "hsl(var(--header-muted))",
+          accent: "hsl(var(--header-accent))",
+          border: "hsl(var(--header-border))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

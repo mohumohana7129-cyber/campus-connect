@@ -1,41 +1,47 @@
 import { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import kristuJayantiLogo from '@/assets/kristu-jayanti-logo.png';
 
 const navLinks = [
-  { label: 'Home', href: '#' },
-  { label: 'Events', href: '#' },
-  { label: 'Calendar', href: '#' },
-  { label: 'About', href: '#' },
+  { label: 'Home', href: '/' },
+  { label: 'Events', href: '/events' },
+  { label: 'Calendar', href: '/calendar' },
+  { label: 'About', href: '/about' },
 ];
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <header className="sticky top-0 z-50 w-full bg-header-dark border-b border-header-border">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img 
               src={kristuJayantiLogo} 
               alt="Kristu Jayanti University" 
               className="h-12 w-auto"
             />
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link, index) => (
-              <a
+              <Link
                 key={index}
-                href={link.href}
-                className="px-4 py-2 text-sm font-medium text-header-text hover:text-header-accent transition-colors"
+                to={link.href}
+                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                  location.pathname === link.href
+                    ? 'text-header-accent'
+                    : 'text-header-text hover:text-header-accent'
+                }`}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -57,13 +63,18 @@ const Header = () => {
           <div className="container mx-auto px-4">
             <nav className="flex flex-col gap-1">
               {navLinks.map((link, index) => (
-                <a
+                <Link
                   key={index}
-                  href={link.href}
-                  className="px-4 py-3 text-sm font-medium text-header-text hover:bg-header-border rounded-lg transition-colors"
+                  to={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    location.pathname === link.href
+                      ? 'text-header-accent bg-header-border'
+                      : 'text-header-text hover:bg-header-border'
+                  }`}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </nav>
           </div>

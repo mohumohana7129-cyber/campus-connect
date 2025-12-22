@@ -2,8 +2,9 @@ import { useState, useMemo } from 'react';
 import Header from '@/components/Header';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import EventCard from '@/components/EventCard';
+import EventRegistrationForm from '@/components/EventRegistrationForm';
 import { sampleEvents, CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, Users, Building, User } from 'lucide-react';
@@ -14,6 +15,7 @@ const Events = () => {
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
   const [currentView, setCurrentView] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   const filteredEvents = useMemo(() => {
     return sampleEvents.filter((event) => {
@@ -103,13 +105,23 @@ const Events = () => {
       </main>
 
       {/* Event Details Modal */}
-      <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        <DialogContent className="max-w-lg">
+      <Dialog open={!!selectedEvent} onOpenChange={() => {
+        setSelectedEvent(null);
+        setShowRegistration(false);
+      }}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-xl">{selectedEvent?.title}</DialogTitle>
+            <DialogTitle className="text-xl">
+              {showRegistration ? `Register for ${selectedEvent?.title}` : selectedEvent?.title}
+            </DialogTitle>
+            {showRegistration && (
+              <DialogDescription>
+                Fill in your details to complete your registration
+              </DialogDescription>
+            )}
           </DialogHeader>
           
-          {selectedEvent && (
+          {selectedEvent && !showRegistration && (
             <div className="space-y-4">
               <div className="flex gap-2 flex-wrap">
                 <Badge variant="secondary" className="capitalize">
@@ -152,8 +164,23 @@ const Events = () => {
                 </div>
               </div>
 
-              <Button className="w-full mt-4">Register Now</Button>
+              <Button 
+                className="w-full mt-4" 
+                onClick={() => setShowRegistration(true)}
+              >
+                Register Now
+              </Button>
             </div>
+          )}
+
+          {selectedEvent && showRegistration && (
+            <EventRegistrationForm 
+              event={selectedEvent} 
+              onClose={() => {
+                setSelectedEvent(null);
+                setShowRegistration(false);
+              }} 
+            />
           )}
         </DialogContent>
       </Dialog>

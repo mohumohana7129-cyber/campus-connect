@@ -5,14 +5,20 @@ import EventCard from '@/components/EventCard';
 import EventListItem from '@/components/EventListItem';
 import FeaturedEvent from '@/components/FeaturedEvent';
 import StatsBar from '@/components/StatsBar';
-import { sampleEvents, CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
-import { Sparkles } from 'lucide-react';
+import EventRegistrationForm from '@/components/EventRegistrationForm';
+import { sampleEvents, CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
+import { Sparkles, Calendar, Clock, MapPin, Users, Building, User } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<EventCategory | null>(null);
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   const featuredEvent = sampleEvents.find(e => e.isFeatured);
   
@@ -40,8 +46,18 @@ const Index = () => {
   }, [searchQuery, activeCategory, activeMode]);
 
   const handleViewDetails = (event: CollegeEvent) => {
-    console.log('View details for:', event.title);
-    // In a real app, this would navigate to event details page
+    setSelectedEvent(event);
+    setShowRegistration(false);
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
   };
 
   return (
@@ -57,9 +73,9 @@ const Index = () => {
               <Sparkles className="w-4 h-4" />
               Your Campus Events Hub
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
-              Discover What's
-              <span className="gradient-text"> Happening</span>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 tracking-tight">
+              <span className="italic">Discover</span> What's
+              <span className="gradient-text font-extrabold tracking-wide drop-shadow-lg"> Happening</span>
             </h1>
             <p className="text-lg text-muted-foreground">
               Never miss a workshop, hackathon, or cultural fest again. 
@@ -91,7 +107,7 @@ const Index = () => {
       {featuredEvent && !searchQuery && !activeCategory && !activeMode && (
         <section className="container mx-auto px-4 pb-12">
           <div className="animate-slide-up" style={{ animationDelay: '400ms' }}>
-            <FeaturedEvent event={featuredEvent} />
+            <FeaturedEvent event={featuredEvent} onViewDetails={handleViewDetails} />
           </div>
         </section>
       )}
@@ -139,6 +155,114 @@ const Index = () => {
           </div>
         )}
       </section>
+
+      {/* Event Details Modal */}
+      <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selectedEvent && !showRegistration && (
+            <>
+              <DialogHeader>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  <Badge className={`${getCategoryColor(selectedEvent.category)} text-xs`}>
+                    {selectedEvent.category.charAt(0).toUpperCase() + selectedEvent.category.slice(1)}
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    {selectedEvent.mode.charAt(0).toUpperCase() + selectedEvent.mode.slice(1)}
+                  </Badge>
+                </div>
+                <DialogTitle className="text-2xl">{selectedEvent.title}</DialogTitle>
+              </DialogHeader>
+              
+              <div className="space-y-6 mt-4">
+                <p className="text-muted-foreground">{selectedEvent.description}</p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Date</p>
+                      <p className="text-sm font-medium">{formatDate(selectedEvent.date)}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Time</p>
+                      <p className="text-sm font-medium">{selectedEvent.time}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Venue</p>
+                      <p className="text-sm font-medium">{selectedEvent.venue}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Attendees</p>
+                      <p className="text-sm font-medium">
+                        {selectedEvent.attendees}{selectedEvent.maxCapacity && ` / ${selectedEvent.maxCapacity}`}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Organizer</p>
+                      <p className="text-sm font-medium">{selectedEvent.organizer}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Building className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Department</p>
+                      <p className="text-sm font-medium">{selectedEvent.department}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button onClick={() => setShowRegistration(true)} className="flex-1">
+                    Register Now
+                  </Button>
+                  <Button variant="outline" onClick={() => setSelectedEvent(null)}>
+                    Close
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+          
+          {selectedEvent && showRegistration && (
+            <EventRegistrationForm 
+              event={selectedEvent} 
+              onClose={() => {
+                setShowRegistration(false);
+                setSelectedEvent(null);
+              }} 
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50">

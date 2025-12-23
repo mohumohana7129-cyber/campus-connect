@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 
 interface FeaturedEventProps {
   event: CollegeEvent;
+  onViewDetails?: (event: CollegeEvent) => void;
 }
 
-const FeaturedEvent = ({ event }: FeaturedEventProps) => {
+const FeaturedEvent = ({ event, onViewDetails }: FeaturedEventProps) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
@@ -16,6 +17,10 @@ const FeaturedEvent = ({ event }: FeaturedEventProps) => {
       day: 'numeric',
       year: 'numeric',
     });
+  };
+
+  const handleClick = () => {
+    onViewDetails?.(event);
   };
 
   return (
@@ -88,10 +93,10 @@ const FeaturedEvent = ({ event }: FeaturedEventProps) => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button size="lg">
+              <Button size="lg" onClick={handleClick}>
                 Register Now
               </Button>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" onClick={handleClick}>
                 Learn More
               </Button>
             </div>

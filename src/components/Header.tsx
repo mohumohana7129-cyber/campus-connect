@@ -18,13 +18,13 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-header-dark border-b border-header-border">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
               src={kristuJayantiLogo} 
               alt="Kristu Jayanti University" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </Link>
 
@@ -34,7 +34,7 @@ const Header = () => {
               <Link
                 key={index}
                 to={link.href}
-                className={`px-4 py-2 text-sm font-medium transition-colors ${
+                className={`px-4 py-2 text-base font-medium transition-colors ${
                   location.pathname === link.href
                     ? 'text-header-accent'
                     : 'text-header-text hover:text-header-accent'
@@ -52,7 +52,7 @@ const Header = () => {
             className="md:hidden text-header-text hover:bg-header-border"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
           </Button>
         </div>
       </div>
@@ -67,7 +67,7 @@ const Header = () => {
                   key={index}
                   to={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  className={`px-4 py-3 text-base font-medium rounded-lg transition-colors ${
                     location.pathname === link.href
                       ? 'text-header-accent bg-header-border'
                       : 'text-header-text hover:bg-header-border'

@@ -129,28 +129,40 @@
     @apply bg-card/80 backdrop-blur-xl border border-border/50 shadow-lg;
   }
 
+  /* Enhanced event card hover - CSS only */
   .event-card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-xl hover:shadow-primary/10;
+    @apply hover:-translate-y-2;
+    @apply hover:border-primary/30;
   }
 
+  /* Category badges with dark mode support */
   .category-workshop {
-    @apply bg-purple-100 text-purple-700;
+    @apply bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300;
   }
 
   .category-cultural {
-    @apply bg-pink-100 text-pink-700;
+    @apply bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300;
   }
 
   .category-tech {
-    @apply bg-cyan-100 text-cyan-700;
+    @apply bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300;
   }
 
   .category-sports {
-    @apply bg-green-100 text-green-700;
+    @apply bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300;
   }
 
   .category-seminar {
-    @apply bg-amber-100 text-amber-700;
+    @apply bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300;
+  }
+
+  /* Mobile touch targets */
+  @media (max-width: 640px) {
+    .touch-target {
+      @apply min-h-[44px] min-w-[44px];
+    }
   }
 }
 

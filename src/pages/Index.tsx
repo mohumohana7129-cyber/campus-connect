@@ -7,7 +7,9 @@ import FeaturedEvent from '@/components/FeaturedEvent';
 import StatsBar from '@/components/StatsBar';
 import EventRegistrationForm from '@/components/EventRegistrationForm';
 import { sampleEvents, CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
-import { Sparkles, Calendar, Clock, MapPin, Users, Building, User } from 'lucide-react';
+import { generateGoogleCalendarUrl } from '@/lib/eventUtils';
+import { useBookmarks } from '@/hooks/useBookmarks';
+import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,6 +21,7 @@ const Index = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
+  const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const featuredEvent = sampleEvents.find(e => e.isFeatured);
   
@@ -151,7 +154,12 @@ const Index = () => {
                 className="animate-slide-up"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <EventCard event={event} onViewDetails={handleViewDetails} />
+                <EventCard 
+                  event={event} 
+                  onViewDetails={handleViewDetails} 
+                  isBookmarked={isBookmarked(event.id)}
+                  onToggleBookmark={toggleBookmark}
+                />
               </div>
             ))}
           </div>
@@ -163,7 +171,12 @@ const Index = () => {
                 className="animate-slide-up"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
-                <EventListItem event={event} onViewDetails={handleViewDetails} />
+                <EventListItem 
+                  event={event} 
+                  onViewDetails={handleViewDetails}
+                  isBookmarked={isBookmarked(event.id)}
+                  onToggleBookmark={toggleBookmark}
+                />
               </div>
             ))}
           </div>
@@ -254,12 +267,22 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <div className="flex gap-3 pt-4">
-                  <Button onClick={() => setShowRegistration(true)} className="flex-1">
-                    Register Now
-                  </Button>
-                  <Button variant="outline" onClick={() => setSelectedEvent(null)}>
-                    Close
+                <div className="flex flex-col gap-3 pt-4">
+                  <div className="flex gap-3">
+                    <Button onClick={() => setShowRegistration(true)} className="flex-1">
+                      Register Now
+                    </Button>
+                    <Button variant="outline" onClick={() => setSelectedEvent(null)}>
+                      Close
+                    </Button>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => window.open(generateGoogleCalendarUrl(selectedEvent), '_blank')}
+                  >
+                    <CalendarPlus className="w-4 h-4 mr-2" />
+                    Add to Google Calendar
                   </Button>
                 </div>
               </div>

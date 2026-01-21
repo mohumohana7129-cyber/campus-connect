@@ -124,10 +124,24 @@ const Index = () => {
         </div>
 
         {filteredEvents.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">No events found</h3>
-            <p className="text-muted-foreground">Try adjusting your filters or search terms</p>
+          <div className="text-center py-20 px-4">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+              <Calendar className="w-10 h-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-2">No events found</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              We couldn't find any events matching your criteria. Try adjusting your filters or check back later for new events.
+            </p>
+            <Button 
+              variant="default"
+              onClick={() => {
+                setSearchQuery('');
+                setActiveCategory(null);
+                setActiveMode(null);
+              }}
+            >
+              View All Events
+            </Button>
           </div>
         ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

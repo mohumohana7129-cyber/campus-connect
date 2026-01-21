@@ -1,13 +1,18 @@
 import { Calendar, Users, Building2, Zap } from 'lucide-react';
-
-const stats = [
-  { icon: Calendar, label: 'Events This Month', value: '24', color: 'text-primary' },
-  { icon: Users, label: 'Active Students', value: '2.5K+', color: 'text-event-cultural' },
-  { icon: Building2, label: 'Clubs & Societies', value: '45', color: 'text-event-sports' },
-  { icon: Zap, label: 'Live Events', value: '3', color: 'text-accent' },
-];
+import { sampleEvents } from '@/lib/eventData';
+import { calculateDynamicStats } from '@/lib/eventUtils';
+import { useMemo } from 'react';
 
 const StatsBar = () => {
+  const dynamicStats = useMemo(() => calculateDynamicStats(sampleEvents), []);
+
+  const stats = [
+    { icon: Calendar, label: 'Events This Month', value: String(dynamicStats.eventsThisMonth), color: 'text-primary' },
+    { icon: Users, label: 'Active Students', value: dynamicStats.activeStudents, color: 'text-event-cultural' },
+    { icon: Building2, label: 'Clubs & Societies', value: String(dynamicStats.uniqueClubs), color: 'text-event-sports' },
+    { icon: Zap, label: 'Live Events', value: String(dynamicStats.liveEvents), color: 'text-accent' },
+  ];
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {stats.map((stat, index) => (

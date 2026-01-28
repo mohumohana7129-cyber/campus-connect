@@ -6,10 +6,11 @@ import EventListItem from '@/components/EventListItem';
 import FeaturedEvent from '@/components/FeaturedEvent';
 import StatsBar from '@/components/StatsBar';
 import EventRegistrationForm from '@/components/EventRegistrationForm';
-import { sampleEvents, CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
+import { CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
 import { generateGoogleCalendarUrl } from '@/lib/eventUtils';
 import { useBookmarks } from '@/hooks/useBookmarks';
-import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus } from 'lucide-react';
+import { useEvents } from '@/hooks/useEvents';
+import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,11 +23,12 @@ const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
   const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { events } = useEvents();
 
-  const featuredEvent = sampleEvents.find(e => e.isFeatured);
+  const featuredEvent = events.find(e => e.isFeatured);
   
   const filteredEvents = useMemo(() => {
-    return sampleEvents.filter(event => {
+    return events.filter(event => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
@@ -46,12 +48,23 @@ const Index = () => {
 
       return true;
     });
-  }, [searchQuery, activeCategory, activeMode]);
+  }, [events, searchQuery, activeCategory, activeMode]);
 
   const handleViewDetails = (event: CollegeEvent) => {
     setSelectedEvent(event);
     setShowRegistration(false);
   };
+
+  const handleRegister = (event: CollegeEvent) => {
+    // If Google Form link exists, redirect to it
+    if (event.googleFormLink) {
+      window.open(event.googleFormLink, '_blank', 'noopener,noreferrer');
+    } else {
+      // Otherwise show the built-in registration form
+      setShowRegistration(true);
+    }
+  };
+
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -269,7 +282,8 @@ const Index = () => {
                 
                 <div className="flex flex-col gap-3 pt-4">
                   <div className="flex gap-3">
-                    <Button onClick={() => setShowRegistration(true)} className="flex-1">
+                    <Button onClick={() => handleRegister(selectedEvent)} className="flex-1">
+                      {selectedEvent.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
                       Register Now
                     </Button>
                     <Button variant="outline" onClick={() => setSelectedEvent(null)}>

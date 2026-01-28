@@ -1,10 +1,11 @@
 import { Calendar, Users, Building2, Zap } from 'lucide-react';
-import { sampleEvents } from '@/lib/eventData';
 import { calculateDynamicStats } from '@/lib/eventUtils';
+import { useEvents } from '@/hooks/useEvents';
 import { useMemo } from 'react';
 
 const StatsBar = () => {
-  const dynamicStats = useMemo(() => calculateDynamicStats(sampleEvents), []);
+  const { events } = useEvents();
+  const dynamicStats = useMemo(() => calculateDynamicStats(events), [events]);
 
   const stats = [
     { icon: Calendar, label: 'Events This Month', value: String(dynamicStats.eventsThisMonth), color: 'text-primary' },

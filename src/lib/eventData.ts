@@ -13,6 +13,7 @@ export interface CollegeEvent {
   organizer: string;
   department: string;
   registrationLink?: string;
+  googleFormLink?: string;
   posterUrl?: string;
   attendees: number;
   maxCapacity?: number;

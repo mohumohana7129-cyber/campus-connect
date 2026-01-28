@@ -3,11 +3,12 @@ import Header from '@/components/Header';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import EventCard from '@/components/EventCard';
 import EventRegistrationForm from '@/components/EventRegistrationForm';
-import { sampleEvents, CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
+import { CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
+import { useEvents } from '@/hooks/useEvents';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin, Users, Building, User } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Building, User, ExternalLink } from 'lucide-react';
 
 const Events = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,9 +17,10 @@ const Events = () => {
   const [currentView, setCurrentView] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
+  const { events } = useEvents();
 
   const filteredEvents = useMemo(() => {
-    return sampleEvents.filter((event) => {
+    return events.filter((event) => {
       const matchesSearch =
         !searchQuery ||
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -30,7 +32,15 @@ const Events = () => {
 
       return matchesSearch && matchesCategory && matchesMode;
     });
-  }, [searchQuery, activeCategory, activeMode]);
+  }, [events, searchQuery, activeCategory, activeMode]);
+
+  const handleRegister = (event: CollegeEvent) => {
+    if (event.googleFormLink) {
+      window.open(event.googleFormLink, '_blank', 'noopener,noreferrer');
+    } else {
+      setShowRegistration(true);
+    }
+  };
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -179,8 +189,9 @@ const Events = () => {
 
               <Button 
                 className="w-full mt-4" 
-                onClick={() => setShowRegistration(true)}
+                onClick={() => selectedEvent && handleRegister(selectedEvent)}
               >
+                {selectedEvent?.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
                 Register Now
               </Button>
             </div>

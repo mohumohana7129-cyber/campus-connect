@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { useEvents } from '@/hooks/useEvents';
 import { CollegeEvent } from '@/lib/eventData';
+import AdminLayout from '@/components/admin/AdminLayout';
 import EventForm from '@/components/admin/EventForm';
 import EventsTable from '@/components/admin/EventsTable';
 import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
@@ -16,16 +15,11 @@ import {
   Users, 
   Building, 
   TrendingUp, 
-  Plus, 
-  LogOut,
-  LayoutDashboard,
-  BarChart3,
-  Calendar
+  Plus,
+  BarChart3
 } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const { logout } = useAdminAuth();
-  const navigate = useNavigate();
   const { events, addEvent, updateEvent, deleteEvent, isLoading } = useEvents();
   const [showEventForm, setShowEventForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<CollegeEvent | null>(null);
@@ -46,11 +40,6 @@ const AdminDashboard = () => {
 
     return { totalEvents, totalRegistrations, uniqueDepartments, eventsThisMonth };
   }, [events]);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/admin/login');
-  };
 
   const handleCreateEvent = (data: Omit<CollegeEvent, 'id'>) => {
     addEvent(data);
@@ -77,43 +66,20 @@ const AdminDashboard = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading dashboard...</p>
+      <AdminLayout>
+        <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading dashboard...</p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
-              <LayoutDashboard className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg">Admin Dashboard</h1>
-              <p className="text-xs text-muted-foreground">Manage events & analytics</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => navigate('/')}>
-              <Calendar className="w-4 h-4 mr-2" />
-              View Site
-            </Button>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 py-8">
+    <AdminLayout>
+      <div className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Card>
@@ -194,7 +160,7 @@ const AdminDashboard = () => {
             <AnalyticsCharts events={events} />
           </TabsContent>
         </Tabs>
-      </main>
+      </div>
 
       {/* Create Event Dialog */}
       <Dialog open={showEventForm} onOpenChange={setShowEventForm}>
@@ -216,7 +182,7 @@ const AdminDashboard = () => {
           />
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminLayout>
   );
 };
 

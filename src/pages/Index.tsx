@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import EventCard from '@/components/EventCard';
@@ -10,12 +11,13 @@ import { CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/
 import { generateGoogleCalendarUrl } from '@/lib/eventUtils';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useEvents } from '@/hooks/useEvents';
-import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink } from 'lucide-react';
+import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink, Shield } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<EventCategory | null>(null);
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
@@ -314,6 +316,23 @@ const Index = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Admin Access Section */}
+      <section className="container mx-auto px-4 py-12">
+        <div className="bg-card border border-border rounded-2xl p-8 text-center">
+          <div className="w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-primary-foreground" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">Admin Access</h2>
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+            Manage events, view analytics, and control your campus event hub.
+          </p>
+          <Button onClick={() => navigate('/admin/login')} className="gap-2">
+            <Shield className="w-4 h-4" />
+            Admin Login
+          </Button>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50">

@@ -1,4 +1,4 @@
-import { Calendar, Clock, MapPin, Users, ArrowRight, Bookmark, Share2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, ArrowRight, Bookmark, Share2, Star } from 'lucide-react';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
 import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon } from '@/lib/eventUtils';
 import { Badge } from '@/components/ui/badge';
@@ -49,8 +49,19 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
   };
 
   return (
-    <Card className="overflow-hidden group bg-card border-border/50 transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 hover:border-primary/30">
-      <div className="relative h-2 gradient-hero" />
+    <Card className="group relative overflow-hidden bg-card border border-border/50 rounded-2xl shadow-sm transition-all duration-300 ease-out hover:shadow-premium-lg hover:-translate-y-2 hover:border-accent/30">
+      {/* Featured Ribbon */}
+      {event.isFeatured && (
+        <div className="absolute top-4 -right-8 z-10 rotate-45">
+          <div className="flex items-center gap-1 px-10 py-1 bg-accent text-accent-foreground text-xs font-bold uppercase tracking-wider shadow-gold">
+            <Star className="w-3 h-3 fill-current" />
+            Featured
+          </div>
+        </div>
+      )}
+
+      {/* Top Gradient Bar */}
+      <div className="h-1.5 gradient-hero" />
       
       <CardContent className="pt-6 pb-5 space-y-4">
         {/* Top Row: Category, Status, Mode, and Actions */}
@@ -58,15 +69,15 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
           <div className="flex flex-wrap gap-2">
             <Badge 
               variant="secondary" 
-              className={`${getCategoryColor(event.category)} text-xs font-semibold px-2.5 py-1`}
+              className={`${getCategoryColor(event.category)} text-xs font-semibold px-3 py-1 rounded-full`}
             >
               {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
             </Badge>
-            <Badge variant="outline" className="text-xs font-medium">
+            <Badge variant="outline" className="text-xs font-medium rounded-full border-muted-foreground/30">
               {modeInfo.icon} {modeInfo.label}
             </Badge>
             {event.maxCapacity && (
-              <Badge variant="outline" className={`text-xs font-medium border ${seatStatusConfig.className}`}>
+              <Badge variant="outline" className={`text-xs font-medium rounded-full border ${seatStatusConfig.className}`}>
                 {seatStatusConfig.label}
               </Badge>
             )}
@@ -74,27 +85,27 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
           <div className="flex items-center gap-1">
             <button
               onClick={handleBookmark}
-              className="p-1.5 rounded-md hover:bg-muted transition-colors"
+              className="p-2 rounded-full hover:bg-muted transition-all duration-200 hover:scale-110"
               aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
             >
               <Bookmark 
                 className={`w-4 h-4 transition-colors ${
-                  isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground hover:text-foreground'
+                  isBookmarked ? 'fill-accent text-accent' : 'text-muted-foreground hover:text-accent'
                 }`} 
               />
             </button>
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-md hover:bg-muted transition-colors"
+              className="p-2 rounded-full hover:bg-muted transition-all duration-200 hover:scale-110"
               aria-label="Share event"
             >
-              <Share2 className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+              <Share2 className="w-4 h-4 text-muted-foreground hover:text-accent transition-colors" />
             </button>
           </div>
         </div>
 
         {/* Event Title */}
-        <h3 className="font-bold text-xl text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-tight">
+        <h3 className="font-bold text-xl text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300 leading-tight">
           {event.title}
         </h3>
         
@@ -107,28 +118,36 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
         <div className="space-y-3 pt-2">
           {/* Date & Time - Single line */}
           <div className="flex items-center gap-3 text-sm">
-            <div className="flex items-center gap-1.5 text-foreground font-medium">
-              <Calendar className="w-4 h-4 text-primary flex-shrink-0" />
+            <div className="flex items-center gap-2 text-foreground font-medium">
+              <div className="p-1.5 rounded-md bg-primary/10">
+                <Calendar className="w-3.5 h-3.5 text-primary" />
+              </div>
               <span>{formatDate(event.date)}</span>
             </div>
-            <span className="text-muted-foreground/50">•</span>
-            <div className="flex items-center gap-1.5 text-foreground font-medium">
-              <Clock className="w-4 h-4 text-primary flex-shrink-0" />
+            <span className="text-muted-foreground/40">•</span>
+            <div className="flex items-center gap-2 text-foreground font-medium">
+              <div className="p-1.5 rounded-md bg-primary/10">
+                <Clock className="w-3.5 h-3.5 text-primary" />
+              </div>
               <span>{event.time}</span>
             </div>
           </div>
           
           {/* Venue - Secondary */}
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 text-primary/70 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="p-1.5 rounded-md bg-muted">
+              <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+            </div>
             <span className="truncate">{event.venue}</span>
           </div>
 
           {/* Registration count with progress bar */}
           <div className="space-y-2 pt-1">
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-primary flex-shrink-0" />
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-md bg-accent/10">
+                  <Users className="w-3.5 h-3.5 text-accent" />
+                </div>
                 <span className={`font-semibold ${seatStatus === 'full' ? 'text-destructive' : 'text-foreground'}`}>
                   {event.attendees}
                 </span>
@@ -152,9 +171,9 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
             {event.maxCapacity && (
               <Progress 
                 value={seatPercentage} 
-                className={`h-1.5 ${
+                className={`h-1.5 rounded-full ${
                   seatStatus === 'full' ? '[&>div]:bg-destructive' : 
-                  seatStatus === 'filling-fast' ? '[&>div]:bg-orange-500' : ''
+                  seatStatus === 'filling-fast' ? '[&>div]:bg-orange-500' : '[&>div]:bg-accent'
                 }`}
               />
             )}
@@ -162,14 +181,14 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
         </div>
       </CardContent>
 
-      <CardFooter className="pt-0 pb-5 px-6">
+      <CardFooter className="pt-0 pb-6 px-6">
         <Button 
-          className="w-full h-11 text-sm font-semibold group/btn transition-all duration-200 hover:shadow-lg hover:shadow-primary/25" 
+          className="w-full h-12 text-sm font-semibold rounded-xl group/btn transition-all duration-300 bg-primary hover:bg-primary/90 hover:shadow-premium" 
           variant="default"
           onClick={() => onViewDetails?.(event)}
         >
           View Details
-          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-200 group-hover/btn:translate-x-1" />
+          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
         </Button>
       </CardFooter>
     </Card>

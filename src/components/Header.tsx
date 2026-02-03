@@ -26,18 +26,18 @@ const Header = () => {
 
   return (
     <header 
-      className={`sticky top-0 z-50 w-full bg-primary border-b border-primary/90 transition-shadow duration-200 ${
-        isScrolled ? 'shadow-md' : ''
+      className={`sticky top-0 z-50 w-full bg-header-dark border-b border-header-border transition-all duration-300 ${
+        isScrolled ? 'shadow-lg shadow-black/20' : ''
       }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center group">
             <img 
               src={kristuJayantiLogo} 
               alt="Kristu Jayanti University" 
-              className="h-10 w-auto"
+              className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
             />
           </Link>
 
@@ -49,7 +49,7 @@ const Header = () => {
                 <Link
                   key={index}
                   to={link.href}
-                  className={`nav-link text-primary-foreground ${isActive ? 'active' : ''}`}
+                  className={`nav-link ${isActive ? 'active' : 'text-header-text'}`}
                 >
                   {link.label}
                 </Link>
@@ -61,7 +61,7 @@ const Header = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden text-primary-foreground hover:bg-primary/80"
+            className="md:hidden text-header-text hover:bg-header-border hover:text-header-accent transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -71,11 +71,11 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden overflow-hidden transition-all duration-200 ease-out ${
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${
           isMobileMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="py-4 border-t border-primary/80 bg-primary">
+        <div className="py-4 border-t border-header-border bg-header-dark/95 backdrop-blur-lg">
           <div className="container mx-auto px-4">
             <nav className="flex flex-col gap-1">
               {navLinks.map((link, index) => {
@@ -85,10 +85,10 @@ const Header = () => {
                     key={index}
                     to={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`px-4 py-3 text-base font-medium rounded-lg transition-colors duration-200 ${
+                    className={`px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
                       isActive
-                        ? 'text-primary-foreground bg-primary/80'
-                        : 'text-primary-foreground/90 hover:bg-primary/80'
+                        ? 'text-header-accent bg-header-border'
+                        : 'text-header-text hover:bg-header-border hover:text-header-accent'
                     }`}
                   >
                     {link.label}

@@ -49,35 +49,35 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
   };
 
   return (
-    <Card className="group relative overflow-hidden bg-card border border-border rounded-xl shadow-card transition-shadow duration-200 hover:shadow-soft">
+    <Card className="group relative overflow-hidden bg-card border border-border/50 rounded-2xl shadow-sm transition-all duration-300 ease-out hover:shadow-premium-lg hover:-translate-y-2 hover:border-accent/30">
       {/* Featured Ribbon */}
       {event.isFeatured && (
-        <div className="absolute top-3 right-3 z-10">
-          <div className="flex items-center gap-1 px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full">
+        <div className="absolute top-4 -right-8 z-10 rotate-45">
+          <div className="flex items-center gap-1 px-10 py-1 bg-accent text-accent-foreground text-xs font-bold uppercase tracking-wider shadow-gold">
             <Star className="w-3 h-3 fill-current" />
             Featured
           </div>
         </div>
       )}
 
-      {/* Top Bar */}
-      <div className="h-1 bg-primary" />
+      {/* Top Gradient Bar */}
+      <div className="h-1.5 gradient-hero" />
       
-      <CardContent className="pt-5 pb-4 space-y-4">
+      <CardContent className="pt-6 pb-5 space-y-4">
         {/* Top Row: Category, Status, Mode, and Actions */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex flex-wrap gap-2">
             <Badge 
               variant="secondary" 
-              className={`${getCategoryColor(event.category)} text-xs font-medium px-2.5 py-0.5 rounded-md`}
+              className={`${getCategoryColor(event.category)} text-xs font-semibold px-3 py-1 rounded-full`}
             >
               {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
             </Badge>
-            <Badge variant="outline" className="text-xs font-medium rounded-md border-border">
+            <Badge variant="outline" className="text-xs font-medium rounded-full border-muted-foreground/30">
               {modeInfo.icon} {modeInfo.label}
             </Badge>
             {event.maxCapacity && (
-              <Badge variant="outline" className={`text-xs font-medium rounded-md border ${seatStatusConfig.className}`}>
+              <Badge variant="outline" className={`text-xs font-medium rounded-full border ${seatStatusConfig.className}`}>
                 {seatStatusConfig.label}
               </Badge>
             )}
@@ -85,61 +85,70 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
           <div className="flex items-center gap-1">
             <button
               onClick={handleBookmark}
-              className="p-1.5 rounded-md hover:bg-muted transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-muted transition-all duration-200 hover:scale-110"
               aria-label={isBookmarked ? 'Remove bookmark' : 'Add bookmark'}
             >
               <Bookmark 
                 className={`w-4 h-4 transition-colors ${
-                  isBookmarked ? 'fill-primary text-primary' : 'text-muted-foreground hover:text-primary'
+                  isBookmarked ? 'fill-accent text-accent' : 'text-muted-foreground hover:text-accent'
                 }`} 
               />
             </button>
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-md hover:bg-muted transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-muted transition-all duration-200 hover:scale-110"
               aria-label="Share event"
             >
-              <Share2 className="w-4 h-4 text-muted-foreground hover:text-primary transition-colors" />
+              <Share2 className="w-4 h-4 text-muted-foreground hover:text-accent transition-colors" />
             </button>
           </div>
         </div>
 
         {/* Event Title */}
-        <h3 className="font-semibold text-lg text-foreground line-clamp-2 leading-snug">
+        <h3 className="font-bold text-xl text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-300 leading-tight">
           {event.title}
         </h3>
         
         {/* Description */}
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
           {event.description}
         </p>
 
         {/* Event Details */}
-        <div className="space-y-2.5 pt-1">
-          {/* Date & Time */}
-          <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-2 text-foreground">
-              <Calendar className="w-4 h-4 text-primary" />
+        <div className="space-y-3 pt-2">
+          {/* Date & Time - Single line */}
+          <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-2 text-foreground font-medium">
+              <div className="p-1.5 rounded-md bg-primary/10">
+                <Calendar className="w-3.5 h-3.5 text-primary" />
+              </div>
               <span>{formatDate(event.date)}</span>
             </div>
-            <div className="flex items-center gap-2 text-foreground">
-              <Clock className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground/40">•</span>
+            <div className="flex items-center gap-2 text-foreground font-medium">
+              <div className="p-1.5 rounded-md bg-primary/10">
+                <Clock className="w-3.5 h-3.5 text-primary" />
+              </div>
               <span>{event.time}</span>
             </div>
           </div>
           
-          {/* Venue */}
+          {/* Venue - Secondary */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <div className="p-1.5 rounded-md bg-muted">
+              <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+            </div>
             <span className="truncate">{event.venue}</span>
           </div>
 
           {/* Registration count with progress bar */}
-          <div className="space-y-1.5 pt-1">
+          <div className="space-y-2 pt-1">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-primary" />
-                <span className={`font-medium ${seatStatus === 'full' ? 'text-destructive' : 'text-foreground'}`}>
+                <div className="p-1.5 rounded-md bg-accent/10">
+                  <Users className="w-3.5 h-3.5 text-accent" />
+                </div>
+                <span className={`font-semibold ${seatStatus === 'full' ? 'text-destructive' : 'text-foreground'}`}>
                   {event.attendees}
                 </span>
                 {event.maxCapacity && (
@@ -154,7 +163,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
                   seatStatus === 'filling-fast' ? 'text-orange-600' : 'text-muted-foreground'
                 }`}>
                   {seatStatus === 'full' ? 'Sold out' : 
-                   seatStatus === 'filling-fast' ? 'Almost full' : 
+                   seatStatus === 'filling-fast' ? 'Almost full!' : 
                    `${Math.round(100 - seatPercentage)}% available`}
                 </span>
               )}
@@ -164,7 +173,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
                 value={seatPercentage} 
                 className={`h-1.5 rounded-full ${
                   seatStatus === 'full' ? '[&>div]:bg-destructive' : 
-                  seatStatus === 'filling-fast' ? '[&>div]:bg-orange-500' : '[&>div]:bg-primary'
+                  seatStatus === 'filling-fast' ? '[&>div]:bg-orange-500' : '[&>div]:bg-accent'
                 }`}
               />
             )}
@@ -172,14 +181,14 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
         </div>
       </CardContent>
 
-      <CardFooter className="pt-0 pb-5 px-5">
+      <CardFooter className="pt-0 pb-6 px-6">
         <Button 
-          className="w-full h-10 text-sm font-medium rounded-lg" 
+          className="w-full h-12 text-sm font-semibold rounded-xl group/btn transition-all duration-300 bg-primary hover:bg-primary/90 hover:shadow-premium" 
           variant="default"
           onClick={() => onViewDetails?.(event)}
         >
           View Details
-          <ArrowRight className="w-4 h-4 ml-2" />
+          <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover/btn:translate-x-1" />
         </Button>
       </CardFooter>
     </Card>

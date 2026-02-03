@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CollegeEvent, EventCategory, EventMode, AudienceType, EventStatus, categories, audienceTypes, eventStatuses } from '@/lib/eventData';
+import { CollegeEvent, EventCategory, EventMode, categories } from '@/lib/eventData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,8 +35,6 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
     attendees: 0,
     maxCapacity: 100,
     isFeatured: false,
-    audienceType: 'students' as AudienceType,
-    status: 'upcoming' as EventStatus,
   });
 
   useEffect(() => {
@@ -55,8 +53,6 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
         attendees: event.attendees,
         maxCapacity: event.maxCapacity || 100,
         isFeatured: event.isFeatured || false,
-        audienceType: event.audienceType || 'students',
-        status: event.status || 'upcoming',
       });
     }
   }, [event]);
@@ -191,44 +187,6 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
                 {modes.map((mode) => (
                   <SelectItem key={mode.value} value={mode.value}>
                     {mode.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="audienceType">Audience Type *</Label>
-            <Select
-              value={formData.audienceType}
-              onValueChange={(value) => setFormData({ ...formData, audienceType: value as AudienceType })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {audienceTypes.map((audience) => (
-                  <SelectItem key={audience.value} value={audience.value}>
-                    {audience.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="status">Event Status *</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) => setFormData({ ...formData, status: value as EventStatus })}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {eventStatuses.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
-                    {status.label}
                   </SelectItem>
                 ))}
               </SelectContent>

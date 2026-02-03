@@ -1,7 +1,5 @@
-export type EventCategory = 'workshop' | 'cultural' | 'tech' | 'sports' | 'seminar' | 'hackathon';
+export type EventCategory = 'workshop' | 'cultural' | 'tech' | 'sports' | 'seminar';
 export type EventMode = 'online' | 'offline' | 'hybrid';
-export type AudienceType = 'students' | 'faculty' | 'public';
-export type EventStatus = 'upcoming' | 'ongoing' | 'completed';
 
 export interface CollegeEvent {
   id: string;
@@ -20,8 +18,6 @@ export interface CollegeEvent {
   attendees: number;
   maxCapacity?: number;
   isFeatured?: boolean;
-  audienceType?: AudienceType;
-  status?: EventStatus;
 }
 
 export const sampleEvents: CollegeEvent[] = [
@@ -145,19 +141,6 @@ export const categories: { value: EventCategory; label: string; color: string }[
   { value: 'tech', label: 'Tech', color: 'category-tech' },
   { value: 'sports', label: 'Sports', color: 'category-sports' },
   { value: 'seminar', label: 'Seminar', color: 'category-seminar' },
-  { value: 'hackathon', label: 'Hackathon', color: 'category-tech' },
-];
-
-export const audienceTypes: { value: AudienceType; label: string }[] = [
-  { value: 'students', label: 'Students' },
-  { value: 'faculty', label: 'Faculty' },
-  { value: 'public', label: 'Public' },
-];
-
-export const eventStatuses: { value: EventStatus; label: string }[] = [
-  { value: 'upcoming', label: 'Upcoming' },
-  { value: 'ongoing', label: 'Ongoing' },
-  { value: 'completed', label: 'Completed' },
 ];
 
 export const getCategoryColor = (category: EventCategory): string => {

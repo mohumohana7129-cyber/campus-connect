@@ -11,7 +11,7 @@ import { CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/
 import { generateGoogleCalendarUrl } from '@/lib/eventUtils';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useEvents } from '@/hooks/useEvents';
-import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink, Shield, ArrowRight, GraduationCap } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink, Shield, ArrowRight, GraduationCap } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -78,76 +78,56 @@ const Index = () => {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden gradient-subtle">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-        
-        <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32 relative">
-          <div className="text-center max-w-4xl mx-auto">
+      <section className="bg-light">
+        <div className="container mx-auto px-4 py-16 md:py-20 lg:py-24">
+          <div className="text-center max-w-3xl mx-auto">
             {/* Badge */}
-            <div 
-              className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary px-5 py-2.5 rounded-full text-sm font-semibold mb-8 animate-fade-in"
-            >
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
               <GraduationCap className="w-4 h-4" />
               Kristu Jayanti University Events Hub
             </div>
             
             {/* Main Heading */}
-            <h1 
-              className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground mb-6 tracking-tight leading-tight animate-fade-in-up"
-              style={{ animationDelay: '100ms' }}
-            >
-              Discover What's{' '}
-              <span className="gradient-text font-extrabold">Happening</span>
-              <br className="hidden sm:block" />
-              On Campus
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
+              Discover What's Happening On Campus
             </h1>
             
             {/* Subheading */}
-            <p 
-              className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in-up"
-              style={{ animationDelay: '200ms' }}
-            >
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-8">
               Never miss a workshop, hackathon, or cultural fest again. 
-              All your university events in one beautiful, organized place.
+              All your university events in one organized place.
             </p>
             
             {/* CTA Buttons */}
-            <div 
-              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in-up"
-              style={{ animationDelay: '300ms' }}
-            >
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
               <Button 
                 size="lg" 
-                className="h-14 px-8 text-base font-semibold rounded-xl shadow-premium hover:shadow-premium-lg transition-all duration-300"
+                className="h-12 px-6 font-medium rounded-lg"
                 onClick={scrollToEvents}
               >
                 Explore Events
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="h-14 px-8 text-base font-semibold rounded-xl border-2 hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300"
+                className="h-12 px-6 font-medium rounded-lg"
                 onClick={() => navigate('/calendar')}
               >
-                <Calendar className="w-5 h-5 mr-2" />
+                <Calendar className="w-4 h-4 mr-2" />
                 View Calendar
               </Button>
             </div>
 
             {/* Stats Bar */}
-            <div className="animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-              <StatsBar />
-            </div>
+            <StatsBar />
           </div>
         </div>
       </section>
 
       {/* Search and Filters Section */}
-      <section className="container mx-auto px-4 -mt-8 relative z-10">
-        <div className="bg-card rounded-2xl shadow-premium border border-border/50 p-6 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+      <section className="container mx-auto px-4 -mt-6 relative z-10">
+        <div className="bg-card rounded-xl shadow-card border border-border p-5">
           <SearchAndFilters
             onSearch={setSearchQuery}
             onFilterCategory={setActiveCategory}
@@ -162,39 +142,37 @@ const Index = () => {
 
       {/* Featured Event */}
       {featuredEvent && !searchQuery && !activeCategory && !activeMode && (
-        <section className="container mx-auto px-4 py-16">
-          <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-            <FeaturedEvent event={featuredEvent} onViewDetails={handleViewDetails} />
-          </div>
+        <section className="container mx-auto px-4 py-12">
+          <FeaturedEvent event={featuredEvent} onViewDetails={handleViewDetails} />
         </section>
       )}
 
       {/* Events Grid/List */}
-      <section id="events-section" className="container mx-auto px-4 py-16">
+      <section id="events-section" className="container mx-auto px-4 py-12">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-foreground mb-2">
+            <h2 className="text-2xl font-bold text-foreground mb-1">
               {searchQuery || activeCategory || activeMode ? 'Search Results' : 'Upcoming Events'}
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''} found
             </p>
           </div>
         </div>
 
         {filteredEvents.length === 0 ? (
-          <div className="text-center py-20 px-4 bg-card rounded-2xl border border-border/50">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-muted flex items-center justify-center">
-              <Calendar className="w-10 h-10 text-muted-foreground" />
+          <div className="text-center py-16 px-4 bg-card rounded-xl border border-border">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-muted flex items-center justify-center">
+              <Calendar className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-2xl font-bold text-foreground mb-2">No events found</h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              We couldn't find any events matching your criteria. Try adjusting your filters or check back later for new events.
+            <h3 className="text-xl font-semibold text-foreground mb-2">No events found</h3>
+            <p className="text-muted-foreground mb-4 max-w-md mx-auto text-sm">
+              We couldn't find any events matching your criteria. Try adjusting your filters.
             </p>
             <Button 
               variant="default"
-              className="rounded-xl"
+              className="rounded-lg"
               onClick={() => {
                 setSearchQuery('');
                 setActiveCategory(null);
@@ -205,37 +183,27 @@ const Index = () => {
             </Button>
           </div>
         ) : viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredEvents.map((event, index) => (
-              <div
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredEvents.map((event) => (
+              <EventCard 
                 key={event.id}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <EventCard 
-                  event={event} 
-                  onViewDetails={handleViewDetails} 
-                  isBookmarked={isBookmarked(event.id)}
-                  onToggleBookmark={toggleBookmark}
-                />
-              </div>
+                event={event} 
+                onViewDetails={handleViewDetails} 
+                isBookmarked={isBookmarked(event.id)}
+                onToggleBookmark={toggleBookmark}
+              />
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
-            {filteredEvents.map((event, index) => (
-              <div
+          <div className="space-y-3">
+            {filteredEvents.map((event) => (
+              <EventListItem 
                 key={event.id}
-                className="animate-fade-in-up"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <EventListItem 
-                  event={event} 
-                  onViewDetails={handleViewDetails}
-                  isBookmarked={isBookmarked(event.id)}
-                  onToggleBookmark={toggleBookmark}
-                />
-              </div>
+                event={event} 
+                onViewDetails={handleViewDetails}
+                isBookmarked={isBookmarked(event.id)}
+                onToggleBookmark={toggleBookmark}
+              />
             ))}
           </div>
         )}
@@ -243,59 +211,51 @@ const Index = () => {
 
       {/* Event Details Modal */}
       <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl">
           {selectedEvent && !showRegistration && (
             <>
               <DialogHeader>
                 <div className="flex flex-wrap gap-2 mb-2">
-                  <Badge className={`${getCategoryColor(selectedEvent.category)} text-xs rounded-full`}>
+                  <Badge className={`${getCategoryColor(selectedEvent.category)} text-xs rounded-md`}>
                     {selectedEvent.category.charAt(0).toUpperCase() + selectedEvent.category.slice(1)}
                   </Badge>
-                  <Badge variant="outline" className="text-xs rounded-full">
+                  <Badge variant="outline" className="text-xs rounded-md">
                     {selectedEvent.mode.charAt(0).toUpperCase() + selectedEvent.mode.slice(1)}
                   </Badge>
                 </div>
-                <DialogTitle className="text-2xl">{selectedEvent.title}</DialogTitle>
+                <DialogTitle className="text-xl">{selectedEvent.title}</DialogTitle>
               </DialogHeader>
               
-              <div className="space-y-6 mt-4">
-                <p className="text-muted-foreground">{selectedEvent.description}</p>
+              <div className="space-y-5 mt-4">
+                <p className="text-muted-foreground text-sm">{selectedEvent.description}</p>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-primary" />
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Calendar className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Date</p>
                       <p className="text-sm font-medium">{formatDate(selectedEvent.date)}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-primary" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Clock className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Time</p>
                       <p className="text-sm font-medium">{selectedEvent.time}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-primary" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <MapPin className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Venue</p>
                       <p className="text-sm font-medium">{selectedEvent.venue}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Users className="w-5 h-5 text-primary" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Users className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Attendees</p>
                       <p className="text-sm font-medium">
@@ -304,20 +264,16 @@ const Index = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <User className="w-5 h-5 text-primary" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <User className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Organizer</p>
                       <p className="text-sm font-medium">{selectedEvent.organizer}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Building className="w-5 h-5 text-primary" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                    <Building className="w-4 h-4 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Department</p>
                       <p className="text-sm font-medium">{selectedEvent.department}</p>
@@ -325,19 +281,19 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-col gap-3 pt-4">
+                <div className="flex flex-col gap-3 pt-2">
                   <div className="flex gap-3">
-                    <Button onClick={() => handleRegister(selectedEvent)} className="flex-1 h-12 rounded-xl">
+                    <Button onClick={() => handleRegister(selectedEvent)} className="flex-1 h-10 rounded-lg">
                       {selectedEvent.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
                       Register Now
                     </Button>
-                    <Button variant="outline" onClick={() => setSelectedEvent(null)} className="h-12 rounded-xl">
+                    <Button variant="outline" onClick={() => setSelectedEvent(null)} className="h-10 rounded-lg">
                       Close
                     </Button>
                   </div>
                   <Button 
                     variant="outline" 
-                    className="w-full h-12 rounded-xl"
+                    className="w-full h-10 rounded-lg"
                     onClick={() => window.open(generateGoogleCalendarUrl(selectedEvent), '_blank')}
                   >
                     <CalendarPlus className="w-4 h-4 mr-2" />
@@ -361,52 +317,41 @@ const Index = () => {
       </Dialog>
 
       {/* Admin Access Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="bg-primary rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-          
-          <div className="relative z-10">
-            <div className="w-16 h-16 rounded-2xl gradient-gold flex items-center justify-center mx-auto mb-6 shadow-gold">
-              <Shield className="w-8 h-8 text-accent-foreground" />
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-3">Admin Access</h2>
-            <p className="text-primary-foreground/80 mb-8 max-w-md mx-auto">
-              Manage events, view analytics, and control your campus event hub.
-            </p>
-            <Button 
-              onClick={() => navigate('/admin/login')} 
-              className="h-12 px-8 bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl font-semibold shadow-gold transition-all duration-300 hover:scale-105"
-            >
-              <Shield className="w-4 h-4 mr-2" />
-              Admin Login
-            </Button>
+      <section className="container mx-auto px-4 py-12">
+        <div className="bg-primary rounded-xl p-8 md:p-12 text-center">
+          <div className="w-12 h-12 rounded-lg bg-primary-foreground/10 flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-6 h-6 text-primary-foreground" />
           </div>
+          <h2 className="text-xl md:text-2xl font-bold text-primary-foreground mb-2">Admin Access</h2>
+          <p className="text-primary-foreground/80 mb-6 max-w-md mx-auto text-sm">
+            Manage events, view analytics, and control your campus event hub.
+          </p>
+          <Button 
+            onClick={() => navigate('/admin/login')} 
+            className="h-10 px-6 bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-lg font-medium"
+          >
+            <Shield className="w-4 h-4 mr-2" />
+            Admin Login
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
       <footer className="border-t border-border bg-card">
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-hero flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-primary-foreground" />
+              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <GraduationCap className="w-4 h-4 text-primary-foreground" />
               </div>
               <div>
-                <span className="font-bold text-foreground">Kristu Jayanti</span>
-                <p className="text-xs text-muted-foreground">University Events</p>
+                <span className="font-semibold text-foreground">Kristu Jayanti</span>
+                <span className="text-muted-foreground ml-1">University</span>
               </div>
             </div>
             <p className="text-sm text-muted-foreground text-center">
-              © 2025 Kristu Jayanti University. Bringing your campus community together.
+              © 2025 Kristu Jayanti University. All rights reserved.
             </p>
-            <div className="flex gap-6 text-sm text-muted-foreground">
-              <a href="/about" className="hover:text-accent transition-colors duration-200">About</a>
-              <a href="#" className="hover:text-accent transition-colors duration-200">Contact</a>
-              <a href="#" className="hover:text-accent transition-colors duration-200">Privacy</a>
-            </div>
           </div>
         </div>
       </footer>

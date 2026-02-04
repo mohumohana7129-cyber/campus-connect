@@ -5,7 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CollegeEvent } from '@/lib/eventData';
-import { CheckCircle, Loader2 } from 'lucide-react';
+import { canRegister, getAvailableSeats } from '@/lib/eventUtils';
+import { useEvents } from '@/hooks/useEvents';
+import { CheckCircle, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 interface RegistrationFormData {
@@ -36,12 +38,29 @@ const EventRegistrationForm = ({ event, onClose }: EventRegistrationFormProps) =
     additionalInfo: '',
   });
 
+  const { registerForEvent, getEvent } = useEvents();
+  
+  // Get latest event data to check seats
+  const currentEvent = getEvent(event.id) || event;
+  const availableSeats = getAvailableSeats(currentEvent);
+  const registrationAllowed = canRegister(currentEvent);
+
   const handleInputChange = (field: keyof RegistrationFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if registration is still allowed
+    if (!registrationAllowed) {
+      toast({
+        title: 'Registration Closed',
+        description: 'This event is no longer accepting registrations.',
+        variant: 'destructive',
+      });
+      return;
+    }
     
     // Basic validation
     if (!formData.fullName || !formData.email || !formData.phone || !formData.studentId) {
@@ -69,13 +88,24 @@ const EventRegistrationForm = ({ event, onClose }: EventRegistrationFormProps) =
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    // Register for the event (decreases available seats)
+    const result = registerForEvent(event.id);
     
-    toast({
-      title: 'Registration Successful!',
-      description: `You have been registered for ${event.title}.`,
-    });
+    setIsSubmitting(false);
+    
+    if (result.success) {
+      setIsSuccess(true);
+      toast({
+        title: 'Registration Successful!',
+        description: `You have been registered for ${event.title}.`,
+      });
+    } else {
+      toast({
+        title: 'Registration Failed',
+        description: result.message,
+        variant: 'destructive',
+      });
+    }
   };
 
   if (isSuccess) {
@@ -109,8 +139,34 @@ const EventRegistrationForm = ({ event, onClose }: EventRegistrationFormProps) =
     );
   }
 
+  // Show message if registration is not allowed
+  if (!registrationAllowed) {
+    return (
+      <div className="text-center py-8 space-y-4">
+        <div className="flex justify-center">
+          <AlertCircle className="w-16 h-16 text-destructive" />
+        </div>
+        <h3 className="text-xl font-semibold text-foreground">Registration Unavailable</h3>
+        <p className="text-muted-foreground">
+          {availableSeats === 0 
+            ? 'This event is fully booked. No seats available.'
+            : 'Registration is closed for this event.'}
+        </p>
+        <Button onClick={onClose} className="mt-4">
+          Close
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Show available seats warning */}
+      {availableSeats !== null && availableSeats <= 5 && (
+        <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3 text-sm text-orange-600">
+          ⚠️ Only {availableSeats} seat{availableSeats !== 1 ? 's' : ''} remaining!
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="fullName">Full Name *</Label>

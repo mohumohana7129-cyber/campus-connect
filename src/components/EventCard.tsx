@@ -1,6 +1,6 @@
 import { Calendar, Clock, MapPin, Users, ArrowRight, Bookmark, Share2 } from 'lucide-react';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
-import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon } from '@/lib/eventUtils';
+import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
@@ -31,6 +31,8 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
   const seatStatus = getSeatStatus(event);
   const seatStatusConfig = getSeatStatusConfig(seatStatus);
   const modeInfo = getModeIcon(event.mode);
+  const eventStatus = getEventStatus(event);
+  const isRegistrationOpen = canRegister(event);
 
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,9 +67,14 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
             <Badge variant="outline" className="text-xs font-medium">
               {modeInfo.icon} {modeInfo.label}
             </Badge>
-            {event.maxCapacity && (
+            {event.maxCapacity && isRegistrationOpen && (
               <Badge variant="outline" className={`text-xs font-medium border ${seatStatusConfig.className}`}>
                 {seatStatusConfig.label}
+              </Badge>
+            )}
+            {eventStatus === 'active' && (
+              <Badge className="text-xs font-medium bg-green-500/10 text-green-600 border-green-500/20">
+                🔴 Live Now
               </Badge>
             )}
           </div>

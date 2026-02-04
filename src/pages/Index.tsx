@@ -8,7 +8,7 @@ import FeaturedEvent from '@/components/FeaturedEvent';
 import StatsBar from '@/components/StatsBar';
 import EventRegistrationForm from '@/components/EventRegistrationForm';
 import { CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
-import { generateGoogleCalendarUrl } from '@/lib/eventUtils';
+import { generateGoogleCalendarUrl, getActiveEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useEvents } from '@/hooks/useEvents';
 import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink, Shield } from 'lucide-react';
@@ -25,12 +25,14 @@ const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const [showRegistration, setShowRegistration] = useState(false);
   const { isBookmarked, toggleBookmark } = useBookmarks();
-  const { events } = useEvents();
+  const { events, registerForEvent } = useEvents();
 
-  const featuredEvent = events.find(e => e.isFeatured);
+  // Only show upcoming and active events on home page
+  const activeEvents = useMemo(() => getActiveEvents(events), [events]);
+  const featuredEvent = activeEvents.find(e => e.isFeatured);
   
   const filteredEvents = useMemo(() => {
-    return events.filter(event => {
+    return activeEvents.filter(event => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
@@ -50,7 +52,7 @@ const Index = () => {
 
       return true;
     });
-  }, [events, searchQuery, activeCategory, activeMode]);
+  }, [activeEvents, searchQuery, activeCategory, activeMode]);
 
   const handleViewDetails = (event: CollegeEvent) => {
     setSelectedEvent(event);
@@ -58,6 +60,9 @@ const Index = () => {
   };
 
   const handleRegister = (event: CollegeEvent) => {
+    if (!canRegister(event)) {
+      return; // Don't allow registration for completed or full events
+    }
     // If Google Form link exists, redirect to it
     if (event.googleFormLink) {
       window.open(event.googleFormLink, '_blank', 'noopener,noreferrer');
@@ -284,10 +289,16 @@ const Index = () => {
                 
                 <div className="flex flex-col gap-3 pt-4">
                   <div className="flex gap-3">
-                    <Button onClick={() => handleRegister(selectedEvent)} className="flex-1">
-                      {selectedEvent.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
-                      Register Now
-                    </Button>
+                    {canRegister(selectedEvent) ? (
+                      <Button onClick={() => handleRegister(selectedEvent)} className="flex-1">
+                        {selectedEvent.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
+                        Register Now
+                      </Button>
+                    ) : (
+                      <Button className="flex-1" variant="secondary" disabled>
+                        {getEventStatus(selectedEvent) === 'completed' ? 'Event Completed' : 'Registration Closed'}
+                      </Button>
+                    )}
                     <Button variant="outline" onClick={() => setSelectedEvent(null)}>
                       Close
                     </Button>

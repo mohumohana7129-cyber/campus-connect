@@ -1,6 +1,7 @@
 import { CollegeEvent } from './eventData';
 
 export type SeatStatus = 'available' | 'filling-fast' | 'full';
+export type EventStatus = 'upcoming' | 'active' | 'completed';
 
 export const getSeatStatus = (event: CollegeEvent): SeatStatus => {
   if (!event.maxCapacity) return 'available';
@@ -19,6 +20,51 @@ export const getSeatStatusConfig = (status: SeatStatus) => {
     default:
       return { label: 'Available', className: 'bg-green-500/10 text-green-600 border-green-500/20' };
   }
+};
+
+// Get event status based on current date
+export const getEventStatus = (event: CollegeEvent): EventStatus => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const eventDate = new Date(event.date);
+  eventDate.setHours(0, 0, 0, 0);
+  
+  if (eventDate.getTime() === today.getTime()) {
+    return 'active';
+  } else if (eventDate < today) {
+    return 'completed';
+  }
+  return 'upcoming';
+};
+
+// Filter events by status
+export const filterEventsByStatus = (events: CollegeEvent[], statuses: EventStatus[]): CollegeEvent[] => {
+  return events.filter(event => statuses.includes(getEventStatus(event)));
+};
+
+// Get upcoming and active events (for main display)
+export const getActiveEvents = (events: CollegeEvent[]): CollegeEvent[] => {
+  return filterEventsByStatus(events, ['upcoming', 'active']);
+};
+
+// Get completed events (for history)
+export const getCompletedEvents = (events: CollegeEvent[]): CollegeEvent[] => {
+  return filterEventsByStatus(events, ['completed']);
+};
+
+// Check if registration is allowed
+export const canRegister = (event: CollegeEvent): boolean => {
+  const status = getEventStatus(event);
+  if (status === 'completed') return false;
+  if (event.maxCapacity && event.attendees >= event.maxCapacity) return false;
+  return true;
+};
+
+// Get available seats
+export const getAvailableSeats = (event: CollegeEvent): number | null => {
+  if (!event.maxCapacity) return null;
+  return Math.max(0, event.maxCapacity - event.attendees);
 };
 
 export const shareEvent = async (event: CollegeEvent) => {
@@ -87,8 +133,9 @@ export const calculateDynamicStats = (events: CollegeEvent[]) => {
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  // Events this month
-  const eventsThisMonth = events.filter((event) => {
+  // Only count upcoming/active events for "this month"
+  const activeAndUpcoming = getActiveEvents(events);
+  const eventsThisMonth = activeAndUpcoming.filter((event) => {
     const eventDate = new Date(event.date);
     return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
   }).length;
@@ -103,8 +150,7 @@ export const calculateDynamicStats = (events: CollegeEvent[]) => {
   const uniqueClubs = new Set(events.map((e) => e.organizer)).size;
 
   // Live events (events happening today)
-  const today = now.toISOString().split('T')[0];
-  const liveEvents = events.filter((event) => event.date === today).length;
+  const liveEvents = filterEventsByStatus(events, ['active']).length;
 
   return {
     eventsThisMonth,

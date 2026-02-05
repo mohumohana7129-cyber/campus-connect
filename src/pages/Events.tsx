@@ -1,23 +1,23 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import Header from '@/components/Header';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import EventCard from '@/components/EventCard';
 import EventRegistrationForm from '@/components/EventRegistrationForm';
 import { CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
-import { getActiveEvents, getCompletedEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
+import { getUpcomingEvents, getTodayEvents, getCompletedEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { useEvents } from '@/hooks/useEvents';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Clock, MapPin, Users, Building, User, ExternalLink, History, CalendarDays } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Building, User, ExternalLink, History, CalendarDays, Zap } from 'lucide-react';
 
 // Empty state component for no results
-const EmptyState = ({ title, message, onReset }: { title: string; message: string; onReset: () => void }) => (
+const EmptyState = ({ title, message, onReset, icon: Icon = Calendar }: { title: string; message: string; onReset: () => void; icon?: React.ComponentType<{ className?: string }> }) => (
   <div className="text-center py-20 px-4">
     <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
-      <Calendar className="w-10 h-10 text-muted-foreground" />
+      <Icon className="w-10 h-10 text-muted-foreground" />
     </div>
     <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
     <p className="text-muted-foreground mb-6 max-w-md mx-auto">{message}</p>
@@ -38,27 +38,33 @@ const Events = () => {
   const { events, registerForEvent } = useEvents();
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
-  // Separate active/upcoming events from completed events
-  const upcomingEvents = useMemo(() => getActiveEvents(events), [events]);
+  // Separate events by status - each category is distinct
+  const upcomingEvents = useMemo(() => getUpcomingEvents(events), [events]);
+  const todayEvents = useMemo(() => getTodayEvents(events), [events]);
   const completedEvents = useMemo(() => getCompletedEvents(events), [events]);
 
-  const filterEvents = (eventList: CollegeEvent[]) => {
+  const filterEvents = useCallback((eventList: CollegeEvent[]) => {
+    if (!eventList || eventList.length === 0) return [];
+    
     return eventList.filter((event) => {
+      if (!event) return false;
+      
       const matchesSearch =
         !searchQuery ||
-        event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        event.organizer.toLowerCase().includes(searchQuery.toLowerCase());
+        (event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        event.organizer?.toLowerCase().includes(searchQuery.toLowerCase()));
 
       const matchesCategory = !activeCategory || event.category === activeCategory;
       const matchesMode = !activeMode || event.mode === activeMode;
 
       return matchesSearch && matchesCategory && matchesMode;
     });
-  };
+  }, [searchQuery, activeCategory, activeMode]);
 
-  const filteredUpcoming = useMemo(() => filterEvents(upcomingEvents), [upcomingEvents, searchQuery, activeCategory, activeMode]);
-  const filteredCompleted = useMemo(() => filterEvents(completedEvents), [completedEvents, searchQuery, activeCategory, activeMode]);
+  const filteredUpcoming = useMemo(() => filterEvents(upcomingEvents), [filterEvents, upcomingEvents]);
+  const filteredToday = useMemo(() => filterEvents(todayEvents), [filterEvents, todayEvents]);
+  const filteredCompleted = useMemo(() => filterEvents(completedEvents), [filterEvents, completedEvents]);
 
   const handleRegister = (event: CollegeEvent) => {
     if (!canRegister(event)) {
@@ -81,7 +87,16 @@ const Events = () => {
     });
   };
 
-  const currentEvents = activeTab === 'upcoming' ? filteredUpcoming : filteredCompleted;
+  // Get current events based on active tab
+  const getCurrentEvents = () => {
+    switch (activeTab) {
+      case 'today': return filteredToday;
+      case 'history': return filteredCompleted;
+      default: return filteredUpcoming;
+    }
+  };
+  
+  const currentEvents = getCurrentEvents();
 
   return (
     <div className="min-h-screen bg-background">
@@ -94,22 +109,28 @@ const Events = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
-                  {activeTab === 'upcoming' ? 'Upcoming Events' : 'Event History'}
+                  {activeTab === 'upcoming' ? 'Upcoming Events' : activeTab === 'today' ? "Today's Events" : 'Event History'}
                 </h1>
                 <p className="text-muted-foreground text-lg">
                   {activeTab === 'upcoming' 
                     ? 'Discover and register for exciting events at Kristu Jayanti University'
+                    : activeTab === 'today'
+                    ? 'Events happening right now - don\'t miss out!'
                     : 'Browse past events and their highlights'}
                 </p>
               </div>
-              <TabsList className="grid w-full max-w-[300px] grid-cols-2">
+              <TabsList className="grid w-full max-w-[400px] grid-cols-3">
                 <TabsTrigger value="upcoming" className="gap-2">
                   <CalendarDays className="w-4 h-4" />
-                  Upcoming
+                  Upcoming ({upcomingEvents.length})
+                </TabsTrigger>
+                <TabsTrigger value="today" className="gap-2">
+                  <Zap className="w-4 h-4" />
+                  Today ({todayEvents.length})
                 </TabsTrigger>
                 <TabsTrigger value="history" className="gap-2">
                   <History className="w-4 h-4" />
-                  History
+                  History ({completedEvents.length})
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -166,6 +187,41 @@ const Events = () => {
               )}
             </TabsContent>
 
+            <TabsContent value="today" className="mt-0">
+              {filteredToday.length > 0 ? (
+                <div
+                  className={
+                    currentView === 'grid'
+                      ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                      : 'flex flex-col gap-4'
+                  }
+                >
+                  {filteredToday.map((event) => (
+                    <div key={event.id} className="relative">
+                      <div className="absolute top-4 left-4 z-10">
+                        <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                          🔴 Live Now
+                        </Badge>
+                      </div>
+                      <EventCard
+                        event={event}
+                        onViewDetails={setSelectedEvent}
+                        isBookmarked={isBookmarked(event.id)}
+                        onToggleBookmark={toggleBookmark}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <EmptyState 
+                  title="No events today"
+                  message="There are no events scheduled for today. Check out upcoming events!"
+                  onReset={() => setActiveTab('upcoming')}
+                  icon={Zap}
+                />
+              )}
+            </TabsContent>
+
             <TabsContent value="history" className="mt-0">
               {filteredCompleted.length > 0 ? (
                 <div
@@ -200,6 +256,7 @@ const Events = () => {
                     setActiveCategory(null);
                     setActiveMode(null);
                   }}
+                  icon={History}
                 />
               )}
             </TabsContent>

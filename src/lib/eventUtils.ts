@@ -22,17 +22,24 @@ export const getSeatStatusConfig = (status: SeatStatus) => {
   }
 };
 
-// Get event status based on current date
+// Get event status based on current date (date-only comparison)
 export const getEventStatus = (event: CollegeEvent): EventStatus => {
+  if (!event?.date) return 'upcoming'; // Defensive fallback
+  
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   
   const eventDate = new Date(event.date);
-  eventDate.setHours(0, 0, 0, 0);
+  if (isNaN(eventDate.getTime())) return 'upcoming'; // Invalid date fallback
   
-  if (eventDate.getTime() === today.getTime()) {
+  const eventDateOnly = new Date(eventDate.getFullYear(), eventDate.getMonth(), eventDate.getDate());
+  
+  const todayTime = todayDateOnly.getTime();
+  const eventTime = eventDateOnly.getTime();
+  
+  if (eventTime === todayTime) {
     return 'active';
-  } else if (eventDate < today) {
+  } else if (eventTime < todayTime) {
     return 'completed';
   }
   return 'upcoming';
@@ -40,10 +47,21 @@ export const getEventStatus = (event: CollegeEvent): EventStatus => {
 
 // Filter events by status
 export const filterEventsByStatus = (events: CollegeEvent[], statuses: EventStatus[]): CollegeEvent[] => {
-  return events.filter(event => statuses.includes(getEventStatus(event)));
+  if (!events || !Array.isArray(events)) return [];
+  return events.filter(event => event && statuses.includes(getEventStatus(event)));
 };
 
-// Get upcoming and active events (for main display)
+// Get upcoming events only (future dates, not today)
+export const getUpcomingEvents = (events: CollegeEvent[]): CollegeEvent[] => {
+  return filterEventsByStatus(events, ['upcoming']);
+};
+
+// Get today's active events
+export const getTodayEvents = (events: CollegeEvent[]): CollegeEvent[] => {
+  return filterEventsByStatus(events, ['active']);
+};
+
+// Get upcoming and active events (for home page display)
 export const getActiveEvents = (events: CollegeEvent[]): CollegeEvent[] => {
   return filterEventsByStatus(events, ['upcoming', 'active']);
 };

@@ -51,12 +51,12 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
   };
 
   return (
-    <Card className="overflow-hidden group bg-card border-border/50 transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 hover:border-primary/30">
+    <Card className="overflow-hidden group bg-card border-border/50 transition-all duration-300 ease-out hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 hover:border-primary/30 h-full flex flex-col">
       <div className="relative h-2 gradient-hero" />
       
-      <CardContent className="pt-6 pb-5 space-y-4">
+      <CardContent className="pt-6 pb-5 flex-1 flex flex-col">
         {/* Top Row: Category, Status, Mode, and Actions */}
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-2 min-h-[32px]">
           <div className="flex flex-wrap gap-2">
             <Badge 
               variant="secondary" 
@@ -78,7 +78,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
               </Badge>
             )}
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <button
               onClick={handleBookmark}
               className="p-1.5 rounded-md hover:bg-muted transition-colors"
@@ -100,18 +100,18 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
           </div>
         </div>
 
-        {/* Event Title */}
-        <h3 className="font-bold text-xl text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-tight">
+        {/* Event Title - Fixed height with line clamp */}
+        <h3 className="font-bold text-xl text-foreground line-clamp-2 group-hover:text-primary transition-colors duration-200 leading-tight mt-4 min-h-[56px]">
           {event.title}
         </h3>
         
-        {/* Description */}
-        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+        {/* Description - Fixed height with line clamp */}
+        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed mt-2 min-h-[40px]">
           {event.description}
         </p>
 
-        {/* Event Details */}
-        <div className="space-y-3 pt-2">
+        {/* Event Details - Takes remaining space */}
+        <div className="space-y-3 pt-4 mt-auto">
           {/* Date & Time - Single line */}
           <div className="flex items-center gap-3 text-sm">
             <div className="flex items-center gap-1.5 text-foreground font-medium">
@@ -131,8 +131,8 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
             <span className="truncate">{event.venue}</span>
           </div>
 
-          {/* Registration count with progress bar */}
-          <div className="space-y-2 pt-1">
+          {/* Registration count with progress bar - Fixed height */}
+          <div className="space-y-2 pt-1 min-h-[52px]">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-primary flex-shrink-0" />
@@ -169,7 +169,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
         </div>
       </CardContent>
 
-      <CardFooter className="pt-0 pb-5 px-6">
+      <CardFooter className="pt-0 pb-5 px-6 mt-auto">
         <Button 
           className="w-full h-11 text-sm font-semibold group/btn transition-all duration-200 hover:shadow-lg hover:shadow-primary/25" 
           variant="default"

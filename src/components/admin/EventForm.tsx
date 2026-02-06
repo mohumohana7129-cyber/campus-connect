@@ -61,7 +61,7 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
     e.preventDefault();
     onSubmit({
       ...formData,
-      googleFormLink: formData.googleFormLink || undefined,
+      googleFormLink: formData.googleFormLink, // Required field
       maxCapacity: formData.maxCapacity || undefined,
     });
   };
@@ -216,14 +216,18 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="googleFormLink">Google Form Registration Link</Label>
+            <Label htmlFor="googleFormLink">Google Form Registration Link *</Label>
             <Input
               id="googleFormLink"
               type="url"
               value={formData.googleFormLink}
               onChange={(e) => setFormData({ ...formData, googleFormLink: e.target.value })}
               placeholder="https://forms.google.com/..."
+              required
             />
+            <p className="text-xs text-muted-foreground">
+              All event registrations are handled via Google Forms. This field is required.
+            </p>
           </div>
 
           <div className="flex items-center gap-3 md:col-span-2">

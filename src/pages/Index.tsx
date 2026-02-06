@@ -6,7 +6,6 @@ import EventCard from '@/components/EventCard';
 import EventListItem from '@/components/EventListItem';
 import FeaturedEvent from '@/components/FeaturedEvent';
 import StatsBar from '@/components/StatsBar';
-import EventRegistrationForm from '@/components/EventRegistrationForm';
 import { CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
 import { generateGoogleCalendarUrl, getActiveEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { useBookmarks } from '@/hooks/useBookmarks';
@@ -23,9 +22,8 @@ const Index = () => {
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
-  const [showRegistration, setShowRegistration] = useState(false);
   const { isBookmarked, toggleBookmark } = useBookmarks();
-  const { events, registerForEvent } = useEvents();
+  const { events } = useEvents();
 
   // Only show upcoming and active events on home page
   const activeEvents = useMemo(() => getActiveEvents(events), [events]);
@@ -56,22 +54,18 @@ const Index = () => {
 
   const handleViewDetails = (event: CollegeEvent) => {
     setSelectedEvent(event);
-    setShowRegistration(false);
   };
 
+  // Google Form is the only registration method
   const handleRegister = (event: CollegeEvent) => {
     if (!canRegister(event)) {
-      return; // Don't allow registration for completed or full events
+      return;
     }
-    // If Google Form link exists, redirect to it
+    // Open Google Form in new tab
     if (event.googleFormLink) {
       window.open(event.googleFormLink, '_blank', 'noopener,noreferrer');
-    } else {
-      // Otherwise show the built-in registration form
-      setShowRegistration(true);
     }
   };
-
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -206,7 +200,7 @@ const Index = () => {
       {/* Event Details Modal */}
       <Dialog open={!!selectedEvent} onOpenChange={(open) => !open && setSelectedEvent(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          {selectedEvent && !showRegistration && (
+          {selectedEvent && (
             <>
               <DialogHeader>
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -289,10 +283,10 @@ const Index = () => {
                 
                 <div className="flex flex-col gap-3 pt-4">
                   <div className="flex gap-3">
-                    {canRegister(selectedEvent) ? (
+                    {canRegister(selectedEvent) && selectedEvent.googleFormLink ? (
                       <Button onClick={() => handleRegister(selectedEvent)} className="flex-1">
-                        {selectedEvent.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
-                        Register Now
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Register via Google Form
                       </Button>
                     ) : (
                       <Button className="flex-1" variant="secondary" disabled>
@@ -314,16 +308,6 @@ const Index = () => {
                 </div>
               </div>
             </>
-          )}
-          
-          {selectedEvent && showRegistration && (
-            <EventRegistrationForm 
-              event={selectedEvent} 
-              onClose={() => {
-                setShowRegistration(false);
-                setSelectedEvent(null);
-              }} 
-            />
           )}
         </DialogContent>
       </Dialog>

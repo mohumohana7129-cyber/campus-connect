@@ -2,12 +2,11 @@ import { useState, useMemo, useCallback } from 'react';
 import Header from '@/components/Header';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import EventCard from '@/components/EventCard';
-import EventRegistrationForm from '@/components/EventRegistrationForm';
 import { CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
 import { getUpcomingEvents, getTodayEvents, getCompletedEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { useEvents } from '@/hooks/useEvents';
 import { useBookmarks } from '@/hooks/useBookmarks';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -33,9 +32,8 @@ const Events = () => {
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
   const [currentView, setCurrentView] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
-  const [showRegistration, setShowRegistration] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
-  const { events, registerForEvent } = useEvents();
+  const { events } = useEvents();
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
   // Separate events by status - each category is distinct
@@ -66,14 +64,13 @@ const Events = () => {
   const filteredToday = useMemo(() => filterEvents(todayEvents), [filterEvents, todayEvents]);
   const filteredCompleted = useMemo(() => filterEvents(completedEvents), [filterEvents, completedEvents]);
 
+  // Google Form is the only registration method
   const handleRegister = (event: CollegeEvent) => {
     if (!canRegister(event)) {
-      return; // Don't allow registration for completed or full events
+      return;
     }
     if (event.googleFormLink) {
       window.open(event.googleFormLink, '_blank', 'noopener,noreferrer');
-    } else {
-      setShowRegistration(true);
     }
   };
 
@@ -265,23 +262,15 @@ const Events = () => {
       </main>
 
       {/* Event Details Modal */}
-      <Dialog open={!!selectedEvent} onOpenChange={() => {
-        setSelectedEvent(null);
-        setShowRegistration(false);
-      }}>
+      <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl">
-              {showRegistration ? `Register for ${selectedEvent?.title}` : selectedEvent?.title}
+              {selectedEvent?.title}
             </DialogTitle>
-            {showRegistration && (
-              <DialogDescription>
-                Fill in your details to complete your registration
-              </DialogDescription>
-            )}
           </DialogHeader>
           
-          {selectedEvent && !showRegistration && (
+          {selectedEvent && (
             <div className="space-y-4">
               <div className="flex gap-2 flex-wrap">
                 <Badge variant="secondary" className="capitalize">
@@ -334,13 +323,13 @@ const Events = () => {
                 </div>
               </div>
 
-              {canRegister(selectedEvent) ? (
+              {canRegister(selectedEvent) && selectedEvent.googleFormLink ? (
                 <Button 
                   className="w-full mt-4" 
-                  onClick={() => selectedEvent && handleRegister(selectedEvent)}
+                  onClick={() => handleRegister(selectedEvent)}
                 >
-                  {selectedEvent?.googleFormLink && <ExternalLink className="w-4 h-4 mr-2" />}
-                  Register Now
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Register via Google Form
                 </Button>
               ) : (
                 <Button className="w-full mt-4" variant="secondary" disabled>
@@ -348,16 +337,6 @@ const Events = () => {
                 </Button>
               )}
             </div>
-          )}
-
-          {selectedEvent && showRegistration && (
-            <EventRegistrationForm 
-              event={selectedEvent} 
-              onClose={() => {
-                setSelectedEvent(null);
-                setShowRegistration(false);
-              }} 
-            />
           )}
         </DialogContent>
       </Dialog>

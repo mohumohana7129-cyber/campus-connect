@@ -3,6 +3,8 @@ import { CollegeEvent, sampleEvents } from '@/lib/eventData';
 import { canRegister } from '@/lib/eventUtils';
 
 const STORAGE_KEY = 'campus_events';
+const VERSION_KEY = 'campus_events_version';
+const EVENTS_VERSION = 3; // Increment this when adding new seeded events
 
 // Shared store for cross-component synchronization
 let listeners: Array<() => void> = [];
@@ -12,18 +14,30 @@ const getStoredEvents = (): CollegeEvent[] => {
   if (cachedEvents !== null) return cachedEvents;
   
   try {
+    const storedVersion = localStorage.getItem(VERSION_KEY);
+    const currentVersion = storedVersion ? parseInt(storedVersion, 10) : 0;
+    
+    // If version mismatch or missing, reseed with latest events
+    if (currentVersion !== EVENTS_VERSION) {
+      cachedEvents = sampleEvents;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleEvents));
+      localStorage.setItem(VERSION_KEY, EVENTS_VERSION.toString());
+      return cachedEvents;
+    }
+    
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       cachedEvents = JSON.parse(stored);
       return cachedEvents!;
     }
   } catch {
-    // Parse failed
+    // Parse failed - reseed
   }
   
   // Initialize with sample data
   cachedEvents = sampleEvents;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(sampleEvents));
+  localStorage.setItem(VERSION_KEY, EVENTS_VERSION.toString());
   return cachedEvents;
 };
 

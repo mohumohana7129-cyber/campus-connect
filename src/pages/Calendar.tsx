@@ -4,25 +4,27 @@ import Header from '@/components/Header';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { sampleEvents, CollegeEvent, getCategoryColor } from '@/lib/eventData';
+import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
+import { useEvents } from '@/hooks/useEvents';
 import { Calendar as CalendarIcon, Clock, MapPin, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const { events } = useEvents();
 
-  // Get dates that have events
+  // Get dates that have events - uses shared state
   const eventDates = useMemo(() => {
-    return sampleEvents.map(event => parseISO(event.date));
-  }, []);
+    return events.map(event => parseISO(event.date));
+  }, [events]);
 
-  // Get events for the selected date
+  // Get events for the selected date - uses shared state
   const eventsForSelectedDate = useMemo(() => {
     if (!selectedDate) return [];
-    return sampleEvents.filter(event => 
+    return events.filter(event => 
       isSameDay(parseISO(event.date), selectedDate)
     );
-  }, [selectedDate]);
+  }, [selectedDate, events]);
 
   // Check if a date has events
   const hasEvents = (date: Date) => {
@@ -120,7 +122,7 @@ const CalendarPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {sampleEvents.slice(0, 5).map((event) => (
+                  {events.slice(0, 5).map((event) => (
                     <div 
                       key={event.id}
                       className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted cursor-pointer transition-colors"

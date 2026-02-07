@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import { CollegeEvent, sampleEvents } from '@/lib/eventData';
 import { canRegister } from '@/lib/eventUtils';
 
@@ -48,12 +48,8 @@ const getSnapshot = () => {
 export const useEvents = () => {
   // Use useSyncExternalStore for proper synchronization across components
   const events = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Initialize on mount
-  useEffect(() => {
-    setIsLoading(false);
-  }, []);
+  // No loading state - events load synchronously from localStorage/cache
+  const isLoading = false;
 
   const addEvent = useCallback((event: Omit<CollegeEvent, 'id'>) => {
     const newEvent: CollegeEvent = {

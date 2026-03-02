@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { CollegeEvent, EventCategory, EventMode, categories } from '@/lib/eventData';
+import { CollegeEvent, EventCategory, EventMode, AvailabilityStatus, categories } from '@/lib/eventData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
 import { DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { X } from 'lucide-react';
 
 interface EventFormProps {
   event?: CollegeEvent | null;
@@ -18,6 +20,16 @@ const modes: { value: EventMode; label: string }[] = [
   { value: 'offline', label: 'In-Person' },
   { value: 'online', label: 'Online' },
   { value: 'hybrid', label: 'Hybrid' },
+];
+
+const availabilityOptions: AvailabilityStatus[] = ['Available', 'Filling Fast', 'Full'];
+
+const DEPARTMENT_OPTIONS = [
+  'All', 'Computer Science', 'Electrical Engineering', 'Mechanical Engineering',
+  'Business Administration', 'Fine Arts', 'Physics', 'English',
+  'Media Studies', 'Communication', 'Biotechnology', 'Environmental Science',
+  'Physical Education', 'Student Affairs', 'Career Services', 'Mathematics',
+  'Chemistry', 'Economics', 'Psychology', 'Sociology', 'History'
 ];
 
 const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
@@ -35,6 +47,8 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
     attendees: 0,
     maxCapacity: 100,
     isFeatured: false,
+    eligibleDepartments: ['All'] as string[],
+    availabilityStatus: 'Available' as AvailabilityStatus,
   });
 
   useEffect(() => {
@@ -53,6 +67,8 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
         attendees: event.attendees,
         maxCapacity: event.maxCapacity || 100,
         isFeatured: event.isFeatured || false,
+        eligibleDepartments: event.eligibleDepartments || ['All'],
+        availabilityStatus: event.availabilityStatus || 'Available',
       });
     }
   }, [event]);
@@ -61,9 +77,29 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
     e.preventDefault();
     onSubmit({
       ...formData,
-      googleFormLink: formData.googleFormLink, // Required field
+      googleFormLink: formData.googleFormLink,
       maxCapacity: formData.maxCapacity || undefined,
+      // These will be set by the caller
+      createdBy: event?.createdBy || '',
+      lastUpdatedBy: '',
+      lastUpdatedAt: new Date().toISOString(),
     });
+  };
+
+  const toggleDepartment = (dept: string) => {
+    if (dept === 'All') {
+      setFormData({ ...formData, eligibleDepartments: ['All'] });
+      return;
+    }
+    
+    let current = formData.eligibleDepartments.filter(d => d !== 'All');
+    if (current.includes(dept)) {
+      current = current.filter(d => d !== dept);
+      if (current.length === 0) current = ['All'];
+    } else {
+      current.push(dept);
+    }
+    setFormData({ ...formData, eligibleDepartments: current });
   };
 
   return (
@@ -194,6 +230,25 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="availabilityStatus">Availability Status *</Label>
+            <Select
+              value={formData.availabilityStatus}
+              onValueChange={(value) => setFormData({ ...formData, availabilityStatus: value as AvailabilityStatus })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {availabilityOptions.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {status}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="attendees">Current Attendees</Label>
             <Input
               id="attendees"
@@ -213,6 +268,30 @@ const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {
               value={formData.maxCapacity}
               onChange={(e) => setFormData({ ...formData, maxCapacity: parseInt(e.target.value) || 100 })}
             />
+          </div>
+
+          {/* Eligible Departments */}
+          <div className="space-y-2 md:col-span-2">
+            <Label>Eligible Departments</Label>
+            <div className="flex flex-wrap gap-2">
+              {DEPARTMENT_OPTIONS.map((dept) => {
+                const isSelected = formData.eligibleDepartments.includes(dept);
+                return (
+                  <Badge
+                    key={dept}
+                    variant={isSelected ? 'default' : 'outline'}
+                    className="cursor-pointer transition-all hover:scale-105"
+                    onClick={() => toggleDepartment(dept)}
+                  >
+                    {dept}
+                    {isSelected && dept !== 'All' && <X className="w-3 h-3 ml-1" />}
+                  </Badge>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Select "All" to make visible to all departments, or pick specific ones.
+            </p>
           </div>
 
           <div className="space-y-2 md:col-span-2">

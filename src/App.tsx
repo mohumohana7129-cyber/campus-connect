@@ -11,6 +11,7 @@ import Calendar from "./pages/Calendar";
 import About from "./pages/About";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import OrganizerPanel from "./pages/OrganizerPanel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,8 +32,16 @@ const App = () => (
             <Route 
               path="/admin/dashboard" 
               element={
-                <ProtectedRoute>
+                <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/organizer" 
+              element={
+                <ProtectedRoute allowedRoles={['organizer']}>
+                  <OrganizerPanel />
                 </ProtectedRoute>
               } 
             />

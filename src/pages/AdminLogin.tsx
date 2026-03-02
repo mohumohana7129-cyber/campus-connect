@@ -22,11 +22,22 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(email, password);
-      if (success) {
-        navigate('/admin/dashboard');
+      const result = await login(email, password);
+      if (result.success) {
+        // Role-based redirect
+        const session = localStorage.getItem('campus_session');
+        if (session) {
+          const user = JSON.parse(session);
+          if (user.role === 'admin') {
+            navigate('/admin/dashboard');
+          } else if (user.role === 'organizer') {
+            navigate('/organizer');
+          } else {
+            navigate('/');
+          }
+        }
       } else {
-        setError('Invalid email or password');
+        setError(result.message);
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -44,9 +55,9 @@ const AdminLogin = () => {
           <div className="mx-auto w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mb-4">
             <Shield className="w-8 h-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl">Admin Login</CardTitle>
+          <CardTitle className="text-2xl">Master Login</CardTitle>
           <CardDescription>
-            Enter your credentials to access the admin dashboard
+            Sign in with your institutional email to access the platform
           </CardDescription>
         </CardHeader>
         
@@ -60,13 +71,13 @@ const AdminLogin = () => {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Institutional Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@campus.edu"
+                  placeholder="yourname@college.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
@@ -99,8 +110,10 @@ const AdminLogin = () => {
           <div className="mt-6 p-4 bg-muted/50 rounded-lg">
             <p className="text-xs text-muted-foreground text-center">
               <strong>Demo credentials:</strong><br />
-              Email: admin@campus.edu<br />
-              Password: admin123
+              Admin: admin@college.edu<br />
+              Organizer: organizer@college.edu<br />
+              Student: student@college.edu<br />
+              (any password works)
             </p>
           </div>
         </CardContent>

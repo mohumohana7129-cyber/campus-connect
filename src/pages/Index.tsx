@@ -9,8 +9,9 @@ import StatsBar from '@/components/StatsBar';
 import { CollegeEvent, EventCategory, EventMode, getCategoryColor } from '@/lib/eventData';
 import { generateGoogleCalendarUrl, getActiveEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { useBookmarks } from '@/hooks/useBookmarks';
-import { useEvents } from '@/hooks/useEvents';
-import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink, Shield } from 'lucide-react';
+import { useEvents, filterEventsForDepartment } from '@/hooks/useEvents';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { Sparkles, Calendar, Clock, MapPin, Users, Building, User, CalendarPlus, ExternalLink } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,9 +25,18 @@ const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { events } = useEvents();
+  const { isAuthenticated, currentUser } = useAdminAuth();
+
+  // Filter events by student department if logged in as student
+  const visibleEvents = useMemo(() => {
+    if (isAuthenticated && currentUser?.role === 'student' && currentUser.department) {
+      return filterEventsForDepartment(events, currentUser.department);
+    }
+    return events; // Non-authenticated or non-student sees all
+  }, [events, isAuthenticated, currentUser]);
 
   // Only show upcoming and active events on home page
-  const activeEvents = useMemo(() => getActiveEvents(events), [events]);
+  const activeEvents = useMemo(() => getActiveEvents(visibleEvents), [visibleEvents]);
   const featuredEvent = activeEvents.find(e => e.isFeatured);
   
   const filteredEvents = useMemo(() => {
@@ -311,23 +321,6 @@ const Index = () => {
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Admin Access Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="bg-card border border-border rounded-2xl p-8 text-center">
-          <div className="w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <h2 className="text-2xl font-bold text-foreground mb-2">Admin Access</h2>
-          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-            Manage events, view analytics, and control your campus event hub.
-          </p>
-          <Button onClick={() => navigate('/admin/login')} className="gap-2">
-            <Shield className="w-4 h-4" />
-            Admin Login
-          </Button>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50">

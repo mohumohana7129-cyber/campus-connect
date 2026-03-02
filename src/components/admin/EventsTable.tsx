@@ -28,6 +28,17 @@ interface EventsTableProps {
   onDelete: (id: string) => void;
 }
 
+const getAvailabilityBadge = (status: string) => {
+  switch (status) {
+    case 'Full':
+      return <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-xs">{status}</Badge>;
+    case 'Filling Fast':
+      return <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-xs">{status}</Badge>;
+    default:
+      return <Badge className="bg-green-500/10 text-green-600 border-green-500/20 text-xs">{status}</Badge>;
+  }
+};
+
 const EventsTable = ({ events, onEdit, onDelete }: EventsTableProps) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -55,7 +66,7 @@ const EventsTable = ({ events, onEdit, onDelete }: EventsTableProps) => {
             <TableHead>Department</TableHead>
             <TableHead>Date & Time</TableHead>
             <TableHead>Venue</TableHead>
-            <TableHead className="text-center">Registrations</TableHead>
+            <TableHead className="text-center">Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -93,10 +104,7 @@ const EventsTable = ({ events, onEdit, onDelete }: EventsTableProps) => {
                 {event.venue}
               </TableCell>
               <TableCell className="text-center">
-                <span className="font-medium">{event.attendees}</span>
-                {event.maxCapacity && (
-                  <span className="text-muted-foreground"> / {event.maxCapacity}</span>
-                )}
+                {getAvailabilityBadge(event.availabilityStatus || 'Available')}
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-end gap-1">

@@ -6,6 +6,7 @@ import { CollegeEvent } from '@/lib/eventData';
 import EventForm from '@/components/admin/EventForm';
 import EventsTable from '@/components/admin/EventsTable';
 import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
+import RoleManager from '@/components/admin/RoleManager';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -20,11 +21,12 @@ import {
   LogOut,
   LayoutDashboard,
   BarChart3,
-  Calendar
+  Calendar,
+  Shield
 } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const { logout } = useAdminAuth();
+  const { logout, currentUser } = useAdminAuth();
   const navigate = useNavigate();
   const { events, addEvent, updateEvent, deleteEvent, isLoading } = useEvents();
   const [showEventForm, setShowEventForm] = useState(false);
@@ -36,7 +38,6 @@ const AdminDashboard = () => {
     const totalRegistrations = events.reduce((sum, event) => sum + event.attendees, 0);
     const uniqueDepartments = new Set(events.map(e => e.department)).size;
     
-    // Events this month
     const now = new Date();
     const eventsThisMonth = events.filter(event => {
       const eventDate = new Date(event.date);
@@ -53,14 +54,23 @@ const AdminDashboard = () => {
   };
 
   const handleCreateEvent = (data: Omit<CollegeEvent, 'id'>) => {
-    addEvent(data);
+    addEvent({
+      ...data,
+      createdBy: currentUser?.email || 'admin@college.edu',
+      lastUpdatedBy: currentUser?.email || 'admin@college.edu',
+      lastUpdatedAt: new Date().toISOString(),
+    });
     setShowEventForm(false);
     toast.success('Event created successfully!');
   };
 
   const handleUpdateEvent = (data: Omit<CollegeEvent, 'id'>) => {
     if (editingEvent) {
-      updateEvent(editingEvent.id, data);
+      updateEvent(editingEvent.id, {
+        ...data,
+        lastUpdatedBy: currentUser?.email || 'admin@college.edu',
+        lastUpdatedAt: new Date().toISOString(),
+      });
       setEditingEvent(null);
       toast.success('Event updated successfully!');
     }
@@ -172,6 +182,10 @@ const AdminDashboard = () => {
               <BarChart3 className="w-4 h-4" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="roles" className="gap-2">
+              <Shield className="w-4 h-4" />
+              Role Management
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="events" className="space-y-4">
@@ -192,6 +206,11 @@ const AdminDashboard = () => {
           <TabsContent value="analytics" className="space-y-6">
             <h2 className="text-xl font-semibold">Analytics & Insights</h2>
             <AnalyticsCharts events={events} />
+          </TabsContent>
+
+          <TabsContent value="roles" className="space-y-6">
+            <h2 className="text-xl font-semibold">Role Management</h2>
+            <RoleManager />
           </TabsContent>
         </Tabs>
       </main>

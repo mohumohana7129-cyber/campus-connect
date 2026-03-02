@@ -1,5 +1,6 @@
 export type EventCategory = 'workshop' | 'cultural' | 'tech' | 'sports' | 'seminar' | 'hackathon';
 export type EventMode = 'online' | 'offline' | 'hybrid';
+export type AvailabilityStatus = 'Available' | 'Filling Fast' | 'Full';
 
 export interface CollegeEvent {
   id: string;
@@ -12,12 +13,18 @@ export interface CollegeEvent {
   mode: EventMode;
   organizer: string;
   department: string;
-  googleFormLink: string; // Required - all registrations via Google Form
+  googleFormLink: string;
   registrationLink?: string;
   posterUrl?: string;
   attendees: number;
   maxCapacity?: number;
   isFeatured?: boolean;
+  // New fields for role-based system
+  eligibleDepartments: string[]; // ["All"] or ["CSE", "ECE", ...]
+  availabilityStatus: AvailabilityStatus;
+  createdBy: string; // email of creator
+  lastUpdatedBy: string; // email of last updater
+  lastUpdatedAt: string; // ISO date string
 }
 
 // Generate future dates relative to today
@@ -36,6 +43,18 @@ const sampleGoogleFormLinks = [
 
 const getFormLink = (index: number) => sampleGoogleFormLinks[index % sampleGoogleFormLinks.length];
 
+const now = new Date().toISOString();
+const adminEmail = 'admin@college.edu';
+const organizerEmail = 'organizer@college.edu';
+
+const getAvailability = (attendees: number, maxCapacity?: number): AvailabilityStatus => {
+  if (!maxCapacity) return 'Available';
+  const pct = (attendees / maxCapacity) * 100;
+  if (pct >= 100) return 'Full';
+  if (pct >= 80) return 'Filling Fast';
+  return 'Available';
+};
+
 export const sampleEvents: CollegeEvent[] = [
   // ==================== UPCOMING EVENTS (Future dates) ====================
   {
@@ -53,6 +72,11 @@ export const sampleEvents: CollegeEvent[] = [
     attendees: 45,
     maxCapacity: 60,
     isFeatured: true,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '2',
@@ -69,6 +93,11 @@ export const sampleEvents: CollegeEvent[] = [
     attendees: 500,
     maxCapacity: 800,
     isFeatured: true,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '3',
@@ -85,6 +114,11 @@ export const sampleEvents: CollegeEvent[] = [
     attendees: 120,
     maxCapacity: 150,
     isFeatured: true,
+    eligibleDepartments: ['Computer Science', 'Electrical Engineering'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '4',
@@ -100,6 +134,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 180,
     maxCapacity: 250,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '5',
@@ -115,6 +154,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 80,
     maxCapacity: 100,
+    eligibleDepartments: ['Electrical Engineering', 'Mechanical Engineering', 'Physics'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '6',
@@ -130,6 +174,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 25,
     maxCapacity: 30,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '7',
@@ -145,6 +194,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 60,
     maxCapacity: 80,
+    eligibleDepartments: ['Business Administration', 'Computer Science'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '8',
@@ -160,12 +214,17 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 120,
     maxCapacity: 200,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '9',
     title: 'Web Development Bootcamp',
     description: 'Intensive 2-day bootcamp covering React, Node.js, and modern web development practices.',
-    date: getFutureDate(0), // Today - Active event
+    date: getFutureDate(0),
     time: '9:00 AM',
     venue: 'Tech Lab 201',
     category: 'workshop',
@@ -175,6 +234,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 35,
     maxCapacity: 40,
+    eligibleDepartments: ['Computer Science', 'Electrical Engineering'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '10',
@@ -190,6 +254,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 250,
     maxCapacity: 500,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '11',
@@ -205,6 +274,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 40,
     maxCapacity: 50,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '12',
@@ -220,6 +294,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 90,
     maxCapacity: 120,
+    eligibleDepartments: ['Computer Science', 'Mathematics', 'Business Administration'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '16',
@@ -235,6 +314,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 28,
     maxCapacity: 40,
+    eligibleDepartments: ['Computer Science', 'Electrical Engineering'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '17',
@@ -250,6 +334,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 350,
     maxCapacity: 500,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '18',
@@ -265,6 +354,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 55,
     maxCapacity: 80,
+    eligibleDepartments: ['Computer Science', 'Business Administration'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '19',
@@ -280,6 +374,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 18,
     maxCapacity: 25,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '20',
@@ -295,6 +394,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 42,
     maxCapacity: 50,
+    eligibleDepartments: ['Electrical Engineering', 'Computer Science', 'Mechanical Engineering'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '21',
@@ -310,6 +414,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 30,
     maxCapacity: 35,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '22',
@@ -325,6 +434,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 160,
     maxCapacity: 200,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '23',
@@ -340,6 +454,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 22,
     maxCapacity: 30,
+    eligibleDepartments: ['Media Studies', 'Fine Arts', 'Communication'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '24',
@@ -355,6 +474,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 180,
     maxCapacity: 300,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '25',
@@ -370,6 +494,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 65,
     maxCapacity: 80,
+    eligibleDepartments: ['Mechanical Engineering', 'Electrical Engineering', 'Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '26',
@@ -385,6 +514,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 45,
     maxCapacity: 60,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '27',
@@ -400,8 +534,12 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 38,
     maxCapacity: 45,
+    eligibleDepartments: ['Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
-  // ==================== NEW UPCOMING EVENTS ====================
   {
     id: '28',
     title: 'Cloud Computing Fundamentals',
@@ -416,6 +554,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 32,
     maxCapacity: 50,
+    eligibleDepartments: ['Computer Science', 'Electrical Engineering'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '29',
@@ -431,6 +574,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 180,
     maxCapacity: 250,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '30',
@@ -446,6 +594,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 85,
     maxCapacity: 120,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '31',
@@ -461,6 +614,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 40,
     maxCapacity: 45,
+    eligibleDepartments: ['Business Administration', 'Communication', 'Media Studies'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '32',
@@ -476,6 +634,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 75,
     maxCapacity: 100,
+    eligibleDepartments: ['Physics', 'Computer Science', 'Mathematics'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '33',
@@ -491,6 +654,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 400,
     maxCapacity: 600,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '34',
@@ -506,6 +674,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 28,
     maxCapacity: 35,
+    eligibleDepartments: ['Computer Science', 'Fine Arts'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '35',
@@ -521,6 +694,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 64,
     maxCapacity: 80,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '36',
@@ -536,6 +714,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 25,
     maxCapacity: 30,
+    eligibleDepartments: ['Fine Arts', 'Computer Science', 'Communication'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '37',
@@ -551,6 +734,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 50,
     maxCapacity: 60,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '38',
@@ -566,6 +754,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 60,
     maxCapacity: 80,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '39',
@@ -581,6 +774,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 42,
     maxCapacity: 50,
+    eligibleDepartments: ['Computer Science', 'Mathematics', 'Physics'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '40',
@@ -596,6 +794,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 48,
     maxCapacity: 64,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '41',
@@ -611,6 +814,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 200,
     maxCapacity: 300,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '42',
@@ -626,6 +834,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 15,
     maxCapacity: 20,
+    eligibleDepartments: ['Fine Arts', 'Communication'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '43',
@@ -641,6 +854,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 80,
     maxCapacity: 100,
+    eligibleDepartments: ['Biotechnology', 'Computer Science', 'Electrical Engineering'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '44',
@@ -656,6 +874,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 32,
     maxCapacity: 40,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '45',
@@ -671,6 +894,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 350,
     maxCapacity: 500,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '46',
@@ -686,6 +914,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 22,
     maxCapacity: 25,
+    eligibleDepartments: ['Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '47',
@@ -701,8 +934,12 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 280,
     maxCapacity: 400,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
-  // ==================== 20 NEW UPCOMING EVENTS ====================
   {
     id: '48',
     title: 'DevOps & CI/CD Pipeline Workshop',
@@ -717,6 +954,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 35,
     maxCapacity: 45,
+    eligibleDepartments: ['Computer Science'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '49',
@@ -732,6 +974,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 180,
     maxCapacity: 250,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '50',
@@ -747,6 +994,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 120,
     maxCapacity: 160,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '51',
@@ -762,6 +1014,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 38,
     maxCapacity: 40,
+    eligibleDepartments: ['Computer Science', 'Mathematics'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '52',
@@ -777,6 +1034,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 150,
     maxCapacity: 200,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '53',
@@ -792,6 +1054,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 200,
     maxCapacity: 300,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '54',
@@ -807,6 +1074,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 28,
     maxCapacity: 35,
+    eligibleDepartments: ['Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '55',
@@ -822,6 +1094,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 450,
     maxCapacity: 600,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '56',
@@ -837,6 +1114,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 20,
     maxCapacity: 25,
+    eligibleDepartments: ['English', 'Communication', 'Media Studies'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '57',
@@ -852,6 +1134,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 180,
     maxCapacity: 250,
+    eligibleDepartments: ['Business Administration', 'Computer Science', 'Economics'],
+    availabilityStatus: 'Available',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '58',
@@ -867,6 +1154,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 60,
     maxCapacity: 80,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '59',
@@ -882,6 +1174,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 18,
     maxCapacity: 20,
+    eligibleDepartments: ['Computer Science', 'Fine Arts'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '60',
@@ -897,6 +1194,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 24,
     maxCapacity: 30,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '61',
@@ -912,6 +1214,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 30,
     maxCapacity: 35,
+    eligibleDepartments: ['Fine Arts', 'Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '62',
@@ -927,6 +1234,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 380,
     maxCapacity: 500,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '63',
@@ -942,6 +1254,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 45,
     maxCapacity: 50,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '64',
@@ -957,6 +1274,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 32,
     maxCapacity: 40,
+    eligibleDepartments: ['Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '65',
@@ -972,6 +1294,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 100,
     maxCapacity: 150,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '66',
@@ -987,6 +1314,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 250,
     maxCapacity: 350,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Available',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '67',
@@ -1002,6 +1334,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 40,
     maxCapacity: 50,
+    eligibleDepartments: ['Computer Science'],
+    availabilityStatus: 'Filling Fast',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   // ==================== COMPLETED EVENTS (Past dates) ====================
   {
@@ -1018,6 +1355,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(0),
     attendees: 600,
     maxCapacity: 600,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Full',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '14',
@@ -1033,6 +1375,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(1),
     attendees: 75,
     maxCapacity: 75,
+    eligibleDepartments: ['Computer Science', 'Mathematics'],
+    availabilityStatus: 'Full',
+    createdBy: organizerEmail,
+    lastUpdatedBy: organizerEmail,
+    lastUpdatedAt: now,
   },
   {
     id: '15',
@@ -1048,6 +1395,11 @@ export const sampleEvents: CollegeEvent[] = [
     googleFormLink: getFormLink(2),
     attendees: 200,
     maxCapacity: 200,
+    eligibleDepartments: ['All'],
+    availabilityStatus: 'Full',
+    createdBy: adminEmail,
+    lastUpdatedBy: adminEmail,
+    lastUpdatedAt: now,
   },
 ];
 

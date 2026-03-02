@@ -4,6 +4,13 @@ export type SeatStatus = 'available' | 'filling-fast' | 'full';
 export type EventStatus = 'upcoming' | 'active' | 'completed';
 
 export const getSeatStatus = (event: CollegeEvent): SeatStatus => {
+  // Use availabilityStatus if present (new model)
+  if (event.availabilityStatus) {
+    if (event.availabilityStatus === 'Full') return 'full';
+    if (event.availabilityStatus === 'Filling Fast') return 'filling-fast';
+    return 'available';
+  }
+  // Fallback to numeric calculation
   if (!event.maxCapacity) return 'available';
   const percentage = (event.attendees / event.maxCapacity) * 100;
   if (percentage >= 100) return 'full';

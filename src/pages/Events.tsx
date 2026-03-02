@@ -4,8 +4,9 @@ import SearchAndFilters from '@/components/SearchAndFilters';
 import EventCard from '@/components/EventCard';
 import { CollegeEvent, EventCategory, EventMode } from '@/lib/eventData';
 import { getUpcomingEvents, getTodayEvents, getCompletedEvents, getEventStatus, canRegister } from '@/lib/eventUtils';
-import { useEvents } from '@/hooks/useEvents';
+import { useEvents, filterEventsForDepartment } from '@/hooks/useEvents';
 import { useBookmarks } from '@/hooks/useBookmarks';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,11 +36,20 @@ const Events = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
   const { events } = useEvents();
   const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isAuthenticated, currentUser } = useAdminAuth();
+
+  // Filter events by student department if logged in as student
+  const visibleEvents = useMemo(() => {
+    if (isAuthenticated && currentUser?.role === 'student' && currentUser.department) {
+      return filterEventsForDepartment(events, currentUser.department);
+    }
+    return events;
+  }, [events, isAuthenticated, currentUser]);
 
   // Separate events by status - each category is distinct
-  const upcomingEvents = useMemo(() => getUpcomingEvents(events), [events]);
-  const todayEvents = useMemo(() => getTodayEvents(events), [events]);
-  const completedEvents = useMemo(() => getCompletedEvents(events), [events]);
+  const upcomingEvents = useMemo(() => getUpcomingEvents(visibleEvents), [visibleEvents]);
+  const todayEvents = useMemo(() => getTodayEvents(visibleEvents), [visibleEvents]);
+  const completedEvents = useMemo(() => getCompletedEvents(visibleEvents), [visibleEvents]);
 
   const filterEvents = useCallback((eventList: CollegeEvent[]) => {
     if (!eventList || eventList.length === 0) return [];

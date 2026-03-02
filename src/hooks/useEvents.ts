@@ -1,10 +1,10 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import { CollegeEvent, sampleEvents } from '@/lib/eventData';
+import { CollegeEvent, AvailabilityStatus, sampleEvents } from '@/lib/eventData';
 import { canRegister } from '@/lib/eventUtils';
 
 const STORAGE_KEY = 'campus_events';
 const VERSION_KEY = 'campus_events_version';
-const EVENTS_VERSION = 3; // Increment this when adding new seeded events
+const EVENTS_VERSION = 4; // Increment this when adding new seeded events or model changes
 
 // Shared store for cross-component synchronization
 let listeners: Array<() => void> = [];
@@ -57,6 +57,15 @@ const subscribe = (listener: () => void) => {
 
 const getSnapshot = () => {
   return getStoredEvents();
+};
+
+// Filter events visible to a student based on their department
+export const filterEventsForDepartment = (events: CollegeEvent[], department: string): CollegeEvent[] => {
+  return events.filter(event => {
+    if (!event.eligibleDepartments || event.eligibleDepartments.length === 0) return true;
+    if (event.eligibleDepartments.includes('All')) return true;
+    return event.eligibleDepartments.includes(department);
+  });
 };
 
 export const useEvents = () => {
@@ -119,6 +128,15 @@ export const useEvents = () => {
     return { success: true, message: 'Registration successful!' };
   }, []);
 
+  // Update availability status (for organizers/admin)
+  const updateAvailability = useCallback((eventId: string, status: AvailabilityStatus, updatedBy: string) => {
+    const currentEvents = getStoredEvents();
+    const updatedEvents = currentEvents.map(e =>
+      e.id === eventId ? { ...e, availabilityStatus: status, lastUpdatedBy: updatedBy, lastUpdatedAt: new Date().toISOString() } : e
+    );
+    setStoredEvents(updatedEvents);
+  }, []);
+
   // Refresh events from localStorage (useful for cross-tab sync)
   const refreshEvents = useCallback(() => {
     cachedEvents = null; // Clear cache to force reload
@@ -133,6 +151,7 @@ export const useEvents = () => {
     deleteEvent,
     getEvent,
     registerForEvent,
+    updateAvailability,
     refreshEvents,
   };
 };

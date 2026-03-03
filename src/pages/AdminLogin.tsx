@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import { useAdminAuth, DEPARTMENTS } from '@/contexts/AdminAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Lock, Mail, AlertCircle, Shield } from 'lucide-react';
 
 const AdminLogin = () => {
@@ -13,7 +14,9 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAdminAuth();
+  const [needsDepartment, setNeedsDepartment] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState('');
+  const { login, currentUser } = useAdminAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +27,7 @@ const AdminLogin = () => {
     try {
       const result = await login(email, password);
       if (result.success) {
-        // Role-based redirect
+        // Check role from session
         const session = localStorage.getItem('campus_session');
         if (session) {
           const user = JSON.parse(session);
@@ -32,8 +35,13 @@ const AdminLogin = () => {
             navigate('/admin/dashboard');
           } else if (user.role === 'organizer') {
             navigate('/organizer');
-          } else {
-            navigate('/');
+          } else if (user.role === 'student') {
+            // Check if student needs department selection
+            if (!user.department) {
+              setNeedsDepartment(true);
+            } else {
+              navigate('/');
+            }
           }
         }
       } else {
@@ -45,6 +53,82 @@ const AdminLogin = () => {
       setIsLoading(false);
     }
   };
+
+  const handleDepartmentSubmit = () => {
+    if (!selectedDepartment) {
+      setError('Please select your department');
+      return;
+    }
+
+    // Update user in localStorage
+    const usersRaw = localStorage.getItem('campus_users');
+    if (usersRaw) {
+      const users = JSON.parse(usersRaw);
+      const idx = users.findIndex((u: any) => u.email === email.toLowerCase().trim());
+      if (idx >= 0) {
+        users[idx].department = selectedDepartment;
+        localStorage.setItem('campus_users', JSON.stringify(users));
+        // Update session too
+        const session = JSON.parse(localStorage.getItem('campus_session') || '{}');
+        session.department = selectedDepartment;
+        localStorage.setItem('campus_session', JSON.stringify(session));
+      }
+    }
+
+    navigate('/');
+  };
+
+  // Department selection step
+  if (needsDepartment) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="absolute inset-0 gradient-hero opacity-5" />
+        
+        <Card className="w-full max-w-md relative z-10">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-16 h-16 rounded-2xl gradient-hero flex items-center justify-center mb-4">
+              <Shield className="w-8 h-8 text-primary-foreground" />
+            </div>
+            <CardTitle className="text-2xl">Select Your Department</CardTitle>
+            <CardDescription>
+              Please select your department to personalize your event feed
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent>
+            <div className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="space-y-2">
+                <Label htmlFor="department">Department *</Label>
+                <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your department" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {DEPARTMENTS.map((dept) => (
+                      <SelectItem key={dept} value={dept}>
+                        {dept}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <Button onClick={handleDepartmentSubmit} className="w-full">
+                Continue
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

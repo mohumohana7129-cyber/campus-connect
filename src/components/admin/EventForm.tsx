@@ -25,11 +25,23 @@ const modes: { value: EventMode; label: string }[] = [
 const availabilityOptions: AvailabilityStatus[] = ['Available', 'Filling Fast', 'Full'];
 
 const DEPARTMENT_OPTIONS = [
-  'All', 'Computer Science', 'Electrical Engineering', 'Mechanical Engineering',
-  'Business Administration', 'Fine Arts', 'Physics', 'English',
-  'Media Studies', 'Communication', 'Biotechnology', 'Environmental Science',
-  'Physical Education', 'Student Affairs', 'Career Services', 'Mathematics',
-  'Chemistry', 'Economics', 'Psychology', 'Sociology', 'History'
+  'All',
+  'Department of Psychology',
+  'Department of Media Studies',
+  'Department of English',
+  'Department of Social Sciences and Languages',
+  'Department of Social Work',
+  'Department of Management',
+  'Department of Professional Management Studies',
+  'Department of Commerce',
+  'Department of Professional Accounting & Finance',
+  'Department of Economics',
+  'Department of Computer Science (UG)',
+  'Department of Computer Science (PG)',
+  'Department of Physical Sciences',
+  'Department of Life Sciences',
+  'Department of Forensic Science',
+  'Department of Law (School of Law)',
 ];
 
 const EventForm = ({ event, onSubmit, onCancel }: EventFormProps) => {

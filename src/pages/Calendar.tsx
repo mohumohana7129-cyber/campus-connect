@@ -5,26 +5,36 @@ import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
-import { useEvents } from '@/hooks/useEvents';
+import { useEvents, filterEventsForDepartment } from '@/hooks/useEvents';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Calendar as CalendarIcon, Clock, MapPin, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const { events } = useEvents();
+  const { isAuthenticated, currentUser } = useAdminAuth();
+
+  // Filter events by student department if logged in as student
+  const visibleEvents = useMemo(() => {
+    if (isAuthenticated && currentUser?.role === 'student' && currentUser.department) {
+      return filterEventsForDepartment(events, currentUser.department);
+    }
+    return events;
+  }, [events, isAuthenticated, currentUser]);
 
   // Get dates that have events - uses shared state
   const eventDates = useMemo(() => {
-    return events.map(event => parseISO(event.date));
-  }, [events]);
+    return visibleEvents.map(event => parseISO(event.date));
+  }, [visibleEvents]);
 
-  // Get events for the selected date - uses shared state
+  // Get events for the selected date
   const eventsForSelectedDate = useMemo(() => {
     if (!selectedDate) return [];
-    return events.filter(event => 
+    return visibleEvents.filter(event => 
       isSameDay(parseISO(event.date), selectedDate)
     );
-  }, [selectedDate, events]);
+  }, [selectedDate, visibleEvents]);
 
   // Check if a date has events
   const hasEvents = (date: Date) => {
@@ -122,7 +132,7 @@ const CalendarPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {events.slice(0, 5).map((event) => (
+                  {visibleEvents.slice(0, 5).map((event) => (
                     <div 
                       key={event.id}
                       className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted cursor-pointer transition-colors"

@@ -28,12 +28,23 @@ const SESSION_KEY = 'campus_session';
 const ADMIN_EMAIL = 'admin@college.edu';
 
 // Department list for student auto-assignment
-const DEPARTMENTS = [
-  'Computer Science', 'Electrical Engineering', 'Mechanical Engineering',
-  'Business Administration', 'Fine Arts', 'Physics', 'English',
-  'Media Studies', 'Communication', 'Biotechnology', 'Environmental Science',
-  'Physical Education', 'Student Affairs', 'Career Services', 'Mathematics',
-  'Chemistry', 'Economics', 'Psychology', 'Sociology', 'History'
+export const DEPARTMENTS = [
+  'Department of Psychology',
+  'Department of Media Studies',
+  'Department of English',
+  'Department of Social Sciences and Languages',
+  'Department of Social Work',
+  'Department of Management',
+  'Department of Professional Management Studies',
+  'Department of Commerce',
+  'Department of Professional Accounting & Finance',
+  'Department of Economics',
+  'Department of Computer Science (UG)',
+  'Department of Computer Science (PG)',
+  'Department of Physical Sciences',
+  'Department of Life Sciences',
+  'Department of Forensic Science',
+  'Department of Law (School of Law)',
 ];
 
 const getDefaultDepartment = (email: string): string => {
@@ -64,7 +75,7 @@ const getStoredUsers = (): AppUser[] => {
   const defaults: AppUser[] = [
     { email: ADMIN_EMAIL, role: 'admin' },
     { email: 'organizer@college.edu', role: 'organizer' },
-    { email: 'student@college.edu', role: 'student', department: 'Computer Science' },
+    { email: 'student@college.edu', role: 'student', department: 'Department of Computer Science (UG)' },
   ];
   localStorage.setItem(USERS_KEY, JSON.stringify(defaults));
   return defaults;
@@ -111,19 +122,12 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
     let user = users.find(u => u.email === normalizedEmail);
     
     if (!user) {
-      // New email → default Student role
+      // New email → default Student role, no department yet (will be selected in login flow)
       user = {
         email: normalizedEmail,
         role: 'student',
-        department: getDefaultDepartment(normalizedEmail),
       };
       users.push(user);
-      setStoredUsers(users);
-    }
-
-    // Ensure student has department
-    if (user.role === 'student' && !user.department) {
-      user.department = getDefaultDepartment(user.email);
       setStoredUsers(users);
     }
 

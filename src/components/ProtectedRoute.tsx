@@ -10,18 +10,18 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const { isAuthenticated, currentUser } = useAdminAuth();
 
   if (!isAuthenticated || !currentUser) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   if (!allowedRoles.includes(currentUser.role)) {
-    // Redirect to appropriate page based on role
-    if (currentUser.role === 'student') {
-      return <Navigate to="/" replace />;
+    // Redirect to appropriate page based on actual role
+    if (currentUser.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
     }
     if (currentUser.role === 'organizer') {
       return <Navigate to="/organizer" replace />;
     }
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return <>{children}</>;

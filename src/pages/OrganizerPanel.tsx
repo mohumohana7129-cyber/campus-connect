@@ -32,7 +32,7 @@ const OrganizerPanel = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/');
   };
 
   const handleCreateEvent = (data: Omit<CollegeEvent, 'id'>) => {
@@ -92,7 +92,7 @@ const OrganizerPanel = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+            <Button variant="outline" size="sm" onClick={() => navigate('/home')}>
               <Calendar className="w-4 h-4 mr-2" />
               View Site
             </Button>

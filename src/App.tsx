@@ -24,11 +24,40 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
+            {/* Master Page is the default route */}
+            <Route path="/" element={<AdminLogin />} />
+            <Route 
+              path="/home" 
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <Index />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/events" 
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <Events />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/calendar" 
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <Calendar />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/about" 
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <About />
+                </ProtectedRoute>
+              } 
+            />
             <Route 
               path="/admin/dashboard" 
               element={

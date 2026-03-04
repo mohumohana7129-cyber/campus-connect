@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAdminAuth, DEPARTMENTS } from '@/contexts/AdminAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,8 +16,29 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [needsDepartment, setNeedsDepartment] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState('');
-  const { login, currentUser } = useAdminAuth();
+  const { login, currentUser, isAuthenticated } = useAdminAuth();
   const navigate = useNavigate();
+
+  // If already authenticated, redirect based on role
+  const isAlreadyLoggedIn = currentUser && isAuthenticated;
+
+  if (isAlreadyLoggedIn && !needsDepartment) {
+    if (currentUser.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+    if (currentUser.role === 'organizer') {
+      return <Navigate to="/organizer" replace />;
+    }
+    if (currentUser.role === 'student' && currentUser.department) {
+      return <Navigate to="/home" replace />;
+    }
+    // Student without department falls through to department selection
+    if (currentUser.role === 'student' && !currentUser.department) {
+      if (!needsDepartment) {
+        setNeedsDepartment(true);
+      }
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,21 +48,27 @@ const AdminLogin = () => {
     try {
       const result = await login(email, password);
       if (result.success) {
-        // Check role from session
-        const session = localStorage.getItem('campus_session');
-        if (session) {
-          const user = JSON.parse(session);
-          if (user.role === 'admin') {
-            navigate('/admin/dashboard');
-          } else if (user.role === 'organizer') {
-            navigate('/organizer');
-          } else if (user.role === 'student') {
-            // Check if student needs department selection
-            if (!user.department) {
-              setNeedsDepartment(true);
-            } else {
-              navigate('/');
-            }
+        // Re-read the latest user from localStorage to get the updated role
+        const usersRaw = localStorage.getItem('campus_users');
+        const normalizedEmail = email.toLowerCase().trim();
+        let resolvedUser = null;
+        if (usersRaw) {
+          const users = JSON.parse(usersRaw);
+          resolvedUser = users.find((u: any) => u.email === normalizedEmail);
+        }
+        
+        const role = resolvedUser?.role || 'student';
+        
+        if (role === 'admin') {
+          navigate('/admin/dashboard');
+        } else if (role === 'organizer') {
+          navigate('/organizer');
+        } else {
+          // Student
+          if (!resolvedUser?.department) {
+            setNeedsDepartment(true);
+          } else {
+            navigate('/home');
           }
         }
       } else {
@@ -75,7 +102,7 @@ const AdminLogin = () => {
       }
     }
 
-    navigate('/');
+    navigate('/home');
   };
 
   // Department selection step

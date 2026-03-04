@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import kristuJayantiLogo from '@/assets/kristu-jayanti-logo.png';
 
 const navLinks = [
-  { label: 'Home', href: '/' },
+  { label: 'Home', href: '/home' },
   { label: 'Events', href: '/events' },
   { label: 'Calendar', href: '/calendar' },
   { label: 'About', href: '/about' },
@@ -20,7 +20,7 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/home" className="flex items-center">
             <img 
               src={kristuJayantiLogo} 
               alt="Kristu Jayanti University" 

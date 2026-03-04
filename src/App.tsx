@@ -5,11 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/LoginPage";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
 import Calendar from "./pages/Calendar";
 import About from "./pages/About";
-import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import OrganizerPanel from "./pages/OrganizerPanel";
 import NotFound from "./pages/NotFound";
@@ -24,8 +25,13 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Master Page is the default route */}
-            <Route path="/" element={<AdminLogin />} />
+            {/* Public Landing Page */}
+            <Route path="/" element={<LandingPage />} />
+            
+            {/* Login Routes */}
+            <Route path="/login/:type" element={<LoginPage />} />
+            
+            {/* Protected Student Routes */}
             <Route 
               path="/home" 
               element={
@@ -58,6 +64,8 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            
+            {/* Protected Admin Route */}
             <Route 
               path="/admin/dashboard" 
               element={
@@ -66,6 +74,8 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            
+            {/* Protected Organizer Route */}
             <Route 
               path="/organizer" 
               element={
@@ -74,7 +84,8 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            
+            {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

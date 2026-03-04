@@ -74,6 +74,16 @@ export default {
           accent: "hsl(var(--header-accent))",
           border: "hsl(var(--header-border))",
         },
+        landing: {
+          navy: "hsl(var(--landing-navy))",
+          "navy-light": "hsl(var(--landing-navy-light))",
+          "navy-lighter": "hsl(var(--landing-navy-lighter))",
+          gold: "hsl(var(--landing-gold))",
+          "gold-light": "hsl(var(--landing-gold-light))",
+          cream: "hsl(var(--landing-cream))",
+          text: "hsl(var(--landing-text))",
+          "text-muted": "hsl(var(--landing-text-muted))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

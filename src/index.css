@@ -52,6 +52,16 @@
     --header-accent: 32 95% 55%;
     --header-border: 210 25% 22%;
 
+    /* Landing page colors */
+    --landing-navy: 220 40% 13%;
+    --landing-navy-light: 220 35% 20%;
+    --landing-navy-lighter: 220 30% 28%;
+    --landing-gold: 38 92% 50%;
+    --landing-gold-light: 38 85% 60%;
+    --landing-cream: 40 33% 96%;
+    --landing-text: 220 20% 90%;
+    --landing-text-muted: 220 15% 65%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;

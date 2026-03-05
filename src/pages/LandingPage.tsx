@@ -84,21 +84,21 @@ const LandingPage = () => {
                 {loginDropdownOpen && (
                   <div className="absolute right-0 top-full mt-1 w-48 bg-landing-navy-light border border-landing-navy-lighter rounded-md shadow-xl z-50 py-1 animate-fade-in">
                     <Link
-                      to="/login/admin"
+                      to="/admin-login"
                       className="block px-4 py-2.5 text-sm text-landing-text hover:bg-landing-navy-lighter hover:text-landing-gold transition-colors"
                       style={{ fontFamily: "'Georgia', serif" }}
                     >
                       Admin Login
                     </Link>
                     <Link
-                      to="/login/organiser"
+                      to="/organiser-login"
                       className="block px-4 py-2.5 text-sm text-landing-text hover:bg-landing-navy-lighter hover:text-landing-gold transition-colors"
                       style={{ fontFamily: "'Georgia', serif" }}
                     >
                       Organiser Login
                     </Link>
                     <Link
-                      to="/login/student"
+                      to="/student-login"
                       className="block px-4 py-2.5 text-sm text-landing-text hover:bg-landing-navy-lighter hover:text-landing-gold transition-colors"
                       style={{ fontFamily: "'Georgia', serif" }}
                     >
@@ -139,20 +139,20 @@ const LandingPage = () => {
               Discover Workshops, Fests, Hackathons &amp; Cultural Events happening across all departments
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/login/student">
+              <Link to="/student-login">
                 <Button size="lg" className="bg-landing-gold hover:bg-landing-gold-light text-landing-navy font-semibold px-8 w-full sm:w-auto" style={{ fontFamily: "'Georgia', serif" }}>
                   <GraduationCap className="w-5 h-5 mr-2" />
                   Student Login
                 </Button>
               </Link>
-              <Link to="/login/organiser">
-                <Button size="lg" variant="outline" className="border-landing-navy-lighter text-landing-text hover:bg-landing-navy-lighter px-8 w-full sm:w-auto" style={{ fontFamily: "'Georgia', serif" }}>
+              <Link to="/organiser-login">
+                <Button size="lg" variant="outline" className="border-landing-gold/40 text-landing-gold hover:bg-landing-gold/10 px-8 w-full sm:w-auto" style={{ fontFamily: "'Georgia', serif" }}>
                   <Users className="w-5 h-5 mr-2" />
                   Organiser Login
                 </Button>
               </Link>
-              <Link to="/login/admin">
-                <Button size="lg" variant="outline" className="border-landing-navy-lighter text-landing-text hover:bg-landing-navy-lighter px-8 w-full sm:w-auto" style={{ fontFamily: "'Georgia', serif" }}>
+              <Link to="/admin-login">
+                <Button size="lg" variant="outline" className="border-landing-gold/40 text-landing-gold hover:bg-landing-gold/10 px-8 w-full sm:w-auto" style={{ fontFamily: "'Georgia', serif" }}>
                   <Award className="w-5 h-5 mr-2" />
                   Admin Login
                 </Button>
@@ -237,7 +237,7 @@ const LandingPage = () => {
           </div>
 
           <div className="text-center mt-10">
-            <Link to="/login/student">
+            <Link to="/student-login">
               <Button size="lg" className="bg-landing-gold hover:bg-landing-gold-light text-landing-navy font-semibold px-8" style={{ fontFamily: "'Georgia', serif" }}>
                 Explore Events
               </Button>
@@ -269,9 +269,9 @@ const LandingPage = () => {
               <h4 className="text-landing-text font-bold mb-4" style={{ fontFamily: "'Georgia', serif" }}>Quick Links</h4>
               <ul className="space-y-2">
                 {[
-                  { label: 'Student Login', href: '/login/student' },
-                  { label: 'Organiser Login', href: '/login/organiser' },
-                  { label: 'Admin Login', href: '/login/admin' },
+                  { label: 'Student Login', href: '/student-login' },
+                  { label: 'Organiser Login', href: '/organiser-login' },
+                  { label: 'Admin Login', href: '/admin-login' },
                 ].map((link, i) => (
                   <li key={i}>
                     <Link to={link.href} className="text-landing-text-muted hover:text-landing-gold text-sm transition-colors">

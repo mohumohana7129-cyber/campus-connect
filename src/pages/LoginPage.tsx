@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Navigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
 import { useAdminAuth, DEPARTMENTS } from '@/contexts/AdminAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,10 @@ import { Lock, Mail, AlertCircle, Shield, GraduationCap, Users, ArrowLeft } from
 import kristuJayantiLogo from '@/assets/kristu-jayanti-logo.png';
 
 type LoginType = 'admin' | 'organiser' | 'student';
+
+interface LoginPageProps {
+  loginType: LoginType;
+}
 
 const loginConfig: Record<LoginType, { title: string; icon: React.ReactNode; description: string }> = {
   admin: {
@@ -30,9 +34,7 @@ const loginConfig: Record<LoginType, { title: string; icon: React.ReactNode; des
   },
 };
 
-const LoginPage = () => {
-  const { type } = useParams<{ type: string }>();
-  const loginType = (['admin', 'organiser', 'student'].includes(type || '') ? type : 'student') as LoginType;
+const LoginPage = ({ loginType }: LoginPageProps) => {
   const config = loginConfig[loginType];
 
   const [email, setEmail] = useState('');
@@ -51,7 +53,6 @@ const LoginPage = () => {
     if (currentUser.role === 'student' && currentUser.department) return <Navigate to="/home" replace />;
     if (currentUser.role === 'student' && !currentUser.department) {
       if (!needsDepartment) {
-        // trigger department selection
         setTimeout(() => setNeedsDepartment(true), 0);
       }
     }

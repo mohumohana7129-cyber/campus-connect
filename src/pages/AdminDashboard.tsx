@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { useEvents } from '@/hooks/useEvents';
-import { CollegeEvent } from '@/lib/eventData';
+import { CollegeEvent, AvailabilityStatus } from '@/lib/eventData';
 import EventForm from '@/components/admin/EventForm';
 import EventsTable from '@/components/admin/EventsTable';
 import AnalyticsCharts from '@/components/admin/AnalyticsCharts';
@@ -83,6 +83,15 @@ const AdminDashboard = () => {
 
   const handleEditClick = (event: CollegeEvent) => {
     setEditingEvent(event);
+  };
+
+  const handleStatusChange = (eventId: string, status: AvailabilityStatus) => {
+    updateEvent(eventId, {
+      availabilityStatus: status,
+      lastUpdatedBy: currentUser?.email || 'admin@college.edu',
+      lastUpdatedAt: new Date().toISOString(),
+    });
+    toast.success(`Event status updated to "${status}"`);
   };
 
   if (isLoading) {
@@ -199,7 +208,8 @@ const AdminDashboard = () => {
             <EventsTable 
               events={events} 
               onEdit={handleEditClick} 
-              onDelete={handleDeleteEvent} 
+              onDelete={handleDeleteEvent}
+              onStatusChange={handleStatusChange}
             />
           </TabsContent>
 

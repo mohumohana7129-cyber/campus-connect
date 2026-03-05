@@ -77,6 +77,20 @@ const OrganizerPanel = () => {
     }
   };
 
+  const handleStatusChange = (eventId: string, status: AvailabilityStatus) => {
+    const event = events.find(e => e.id === eventId);
+    if (event && event.createdBy === currentUser?.email) {
+      updateEvent(eventId, {
+        availabilityStatus: status,
+        lastUpdatedBy: currentUser?.email || '',
+        lastUpdatedAt: new Date().toISOString(),
+      });
+      toast.success(`Event status updated to "${status}"`);
+    } else {
+      toast.error('You can only update status of events you created.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -132,6 +146,7 @@ const OrganizerPanel = () => {
             events={myEvents} 
             onEdit={handleEditClick} 
             onDelete={handleDeleteEvent}
+            onStatusChange={handleStatusChange}
           />
         </div>
       </main>

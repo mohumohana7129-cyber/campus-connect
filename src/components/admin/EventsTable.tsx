@@ -1,6 +1,7 @@
-import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
+import { CollegeEvent, getCategoryColor, AvailabilityStatus } from '@/lib/eventData';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -26,11 +27,12 @@ interface EventsTableProps {
   events: CollegeEvent[];
   onEdit: (event: CollegeEvent) => void;
   onDelete: (id: string) => void;
+  onStatusChange?: (eventId: string, status: AvailabilityStatus) => void;
 }
 
 const getAvailabilityBadge = (status: string) => {
   switch (status) {
-    case 'Full':
+    case 'Closed':
       return <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-xs">{status}</Badge>;
     case 'Filling Fast':
       return <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20 text-xs">{status}</Badge>;
@@ -39,7 +41,9 @@ const getAvailabilityBadge = (status: string) => {
   }
 };
 
-const EventsTable = ({ events, onEdit, onDelete }: EventsTableProps) => {
+const statusOptions: AvailabilityStatus[] = ['Available', 'Filling Fast', 'Closed'];
+
+const EventsTable = ({ events, onEdit, onDelete, onStatusChange }: EventsTableProps) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
@@ -104,7 +108,25 @@ const EventsTable = ({ events, onEdit, onDelete }: EventsTableProps) => {
                 {event.venue}
               </TableCell>
               <TableCell className="text-center">
-                {getAvailabilityBadge(event.availabilityStatus || 'Available')}
+                {onStatusChange ? (
+                  <Select
+                    value={event.availabilityStatus || 'Available'}
+                    onValueChange={(value) => onStatusChange(event.id, value as AvailabilityStatus)}
+                  >
+                    <SelectTrigger className="w-[130px] h-8 text-xs mx-auto">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((status) => (
+                        <SelectItem key={status} value={status} className="text-xs">
+                          {status}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  getAvailabilityBadge(event.availabilityStatus || 'Available')
+                )}
               </TableCell>
               <TableCell>
                 <div className="flex items-center justify-end gap-1">

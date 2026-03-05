@@ -6,7 +6,7 @@ export type EventStatus = 'upcoming' | 'active' | 'completed';
 export const getSeatStatus = (event: CollegeEvent): SeatStatus => {
   // Use availabilityStatus if present (new model)
   if (event.availabilityStatus) {
-    if (event.availabilityStatus === 'Full') return 'full';
+    if (event.availabilityStatus === 'Closed') return 'full';
     if (event.availabilityStatus === 'Filling Fast') return 'filling-fast';
     return 'available';
   }
@@ -21,7 +21,7 @@ export const getSeatStatus = (event: CollegeEvent): SeatStatus => {
 export const getSeatStatusConfig = (status: SeatStatus) => {
   switch (status) {
     case 'full':
-      return { label: 'Full', className: 'bg-destructive/10 text-destructive border-destructive/20' };
+      return { label: 'Closed', className: 'bg-destructive/10 text-destructive border-destructive/20' };
     case 'filling-fast':
       return { label: 'Filling Fast', className: 'bg-orange-500/10 text-orange-600 border-orange-500/20' };
     default:
@@ -80,6 +80,8 @@ export const getCompletedEvents = (events: CollegeEvent[]): CollegeEvent[] => {
 
 // Check if registration is allowed
 export const canRegister = (event: CollegeEvent): boolean => {
+  // If manually set to Closed, registration is not allowed
+  if (event.availabilityStatus === 'Closed') return false;
   const status = getEventStatus(event);
   if (status === 'completed') return false;
   if (event.maxCapacity && event.attendees >= event.maxCapacity) return false;

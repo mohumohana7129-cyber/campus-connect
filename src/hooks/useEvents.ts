@@ -4,7 +4,7 @@ import { canRegister } from '@/lib/eventUtils';
 
 const STORAGE_KEY = 'campus_events';
 const VERSION_KEY = 'campus_events_version';
-const EVENTS_VERSION = 5; // Increment this when adding new seeded events or model changes
+const EVENTS_VERSION = 6; // Increment this when adding new seeded events or model changes
 
 // Shared store for cross-component synchronization
 let listeners: Array<() => void> = [];

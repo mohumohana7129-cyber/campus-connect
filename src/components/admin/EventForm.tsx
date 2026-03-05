@@ -22,7 +22,7 @@ const modes: { value: EventMode; label: string }[] = [
   { value: 'hybrid', label: 'Hybrid' },
 ];
 
-const availabilityOptions: AvailabilityStatus[] = ['Available', 'Filling Fast', 'Full'];
+const availabilityOptions: AvailabilityStatus[] = ['Available', 'Filling Fast', 'Closed'];
 
 const DEPARTMENT_OPTIONS = [
   'All',

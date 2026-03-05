@@ -67,11 +67,15 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
             <Badge variant="outline" className="text-xs font-medium">
               {modeInfo.icon} {modeInfo.label}
             </Badge>
-            {event.maxCapacity && isRegistrationOpen && (
+            {event.availabilityStatus === 'Closed' ? (
+              <Badge variant="outline" className="text-xs font-medium border bg-destructive/10 text-destructive border-destructive/20">
+                Registrations Closed
+              </Badge>
+            ) : event.maxCapacity && isRegistrationOpen ? (
               <Badge variant="outline" className={`text-xs font-medium border ${seatStatusConfig.className}`}>
                 {seatStatusConfig.label}
               </Badge>
-            )}
+            ) : null}
             {eventStatus === 'active' && (
               <Badge className="text-xs font-medium bg-green-500/10 text-green-600 border-green-500/20">
                 🔴 Live Now
@@ -133,7 +137,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
 
           {/* Registration count with progress bar - Fixed height */}
           <div className="space-y-2 pt-1 min-h-[52px]">
-            <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-sm">
               <div className="flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-primary flex-shrink-0" />
                 <span className={`font-semibold ${seatStatus === 'full' ? 'text-destructive' : 'text-foreground'}`}>
@@ -145,16 +149,16 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
                   </span>
                 )}
               </div>
-              {event.maxCapacity && (
+              {event.availabilityStatus === 'Closed' ? (
+                <span className="text-xs font-medium text-destructive">Registrations Closed</span>
+              ) : event.maxCapacity ? (
                 <span className={`text-xs font-medium ${
-                  seatStatus === 'full' ? 'text-destructive' : 
                   seatStatus === 'filling-fast' ? 'text-orange-600' : 'text-muted-foreground'
                 }`}>
-                  {seatStatus === 'full' ? 'Sold out' : 
-                   seatStatus === 'filling-fast' ? 'Almost full!' : 
+                  {seatStatus === 'filling-fast' ? 'Almost full!' : 
                    `${Math.round(100 - seatPercentage)}% available`}
                 </span>
-              )}
+              ) : null}
             </div>
             {event.maxCapacity && (
               <Progress 

@@ -29,7 +29,9 @@ const App = () => (
             <Route path="/" element={<LandingPage />} />
             
             {/* Login Routes */}
-            <Route path="/login/:type" element={<LoginPage />} />
+            <Route path="/student-login" element={<LoginPage loginType="student" />} />
+            <Route path="/organiser-login" element={<LoginPage loginType="organiser" />} />
+            <Route path="/admin-login" element={<LoginPage loginType="admin" />} />
             
             {/* Protected Student Routes */}
             <Route 

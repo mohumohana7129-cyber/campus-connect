@@ -60,11 +60,15 @@ const EventListItem = ({ event, onViewDetails, isBookmarked = false, onToggleBoo
               <Badge variant="outline" className="text-xs font-medium">
                 {modeInfo.icon} {modeInfo.label}
               </Badge>
-              {event.maxCapacity && (
+              {event.availabilityStatus === 'Closed' ? (
+                <Badge variant="outline" className="text-xs font-medium border bg-destructive/10 text-destructive border-destructive/20">
+                  Registrations Closed
+                </Badge>
+              ) : event.maxCapacity ? (
                 <Badge variant="outline" className={`text-xs font-medium border ${seatStatusConfig.className}`}>
                   {seatStatusConfig.label}
                 </Badge>
-              )}
+              ) : null}
             </div>
             <div className="flex items-center gap-1">
               <button

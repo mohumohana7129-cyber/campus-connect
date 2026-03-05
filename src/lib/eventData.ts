@@ -1,6 +1,6 @@
 export type EventCategory = 'workshop' | 'cultural' | 'tech' | 'sports' | 'seminar' | 'hackathon';
 export type EventMode = 'online' | 'offline' | 'hybrid';
-export type AvailabilityStatus = 'Available' | 'Filling Fast' | 'Full';
+export type AvailabilityStatus = 'Available' | 'Filling Fast' | 'Closed';
 
 export interface CollegeEvent {
   id: string;
@@ -49,7 +49,7 @@ const organizerEmail = 'organizer@college.edu';
 const getAvailability = (attendees: number, maxCapacity?: number): AvailabilityStatus => {
   if (!maxCapacity) return 'Available';
   const pct = (attendees / maxCapacity) * 100;
-  if (pct >= 100) return 'Full';
+  if (pct >= 100) return 'Closed';
   if (pct >= 80) return 'Filling Fast';
   return 'Available';
 };
@@ -1435,7 +1435,7 @@ export const sampleEvents: CollegeEvent[] = [
     attendees: 600,
     maxCapacity: 600,
     eligibleDepartments: ['All'],
-    availabilityStatus: 'Full',
+    availabilityStatus: 'Closed',
     createdBy: adminEmail,
     lastUpdatedBy: adminEmail,
     lastUpdatedAt: now,
@@ -1455,7 +1455,7 @@ export const sampleEvents: CollegeEvent[] = [
     attendees: 75,
     maxCapacity: 75,
     eligibleDepartments: ['Department of Computer Science (UG)', 'Department of Computer Science (PG)'],
-    availabilityStatus: 'Full',
+    availabilityStatus: 'Closed',
     createdBy: organizerEmail,
     lastUpdatedBy: organizerEmail,
     lastUpdatedAt: now,
@@ -1475,7 +1475,7 @@ export const sampleEvents: CollegeEvent[] = [
     attendees: 200,
     maxCapacity: 200,
     eligibleDepartments: ['All'],
-    availabilityStatus: 'Full',
+    availabilityStatus: 'Closed',
     createdBy: adminEmail,
     lastUpdatedBy: adminEmail,
     lastUpdatedAt: now,

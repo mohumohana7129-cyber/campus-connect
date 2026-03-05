@@ -46,17 +46,8 @@ const LoginPage = ({ loginType }: LoginPageProps) => {
   const { login, currentUser, isAuthenticated } = useAdminAuth();
   const navigate = useNavigate();
 
-  // If already authenticated, redirect based on role
-  if (currentUser && isAuthenticated && !needsDepartment) {
-    if (currentUser.role === 'admin') return <Navigate to="/admin/dashboard" replace />;
-    if (currentUser.role === 'organizer') return <Navigate to="/organizer" replace />;
-    if (currentUser.role === 'student' && currentUser.department) return <Navigate to="/home" replace />;
-    if (currentUser.role === 'student' && !currentUser.department) {
-      if (!needsDepartment) {
-        setTimeout(() => setNeedsDepartment(true), 0);
-      }
-    }
-  }
+  // No auto-redirect on login pages — user intentionally navigated here.
+  // They will be redirected after a successful login submission.
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

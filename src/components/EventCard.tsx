@@ -71,11 +71,15 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
               <Badge variant="outline" className="text-xs font-medium border bg-destructive/10 text-destructive border-destructive/20">
                 Registrations Closed
               </Badge>
-            ) : event.maxCapacity && isRegistrationOpen ? (
-              <Badge variant="outline" className={`text-xs font-medium border ${seatStatusConfig.className}`}>
-                {seatStatusConfig.label}
+            ) : event.availabilityStatus === 'Filling Fast' ? (
+              <Badge variant="outline" className="text-xs font-medium border bg-orange-500/10 text-orange-600 border-orange-500/20">
+                Filling Fast
               </Badge>
-            ) : null}
+            ) : (
+              <Badge variant="outline" className="text-xs font-medium border bg-green-500/10 text-green-600 border-green-500/20">
+                Available
+              </Badge>
+            )
             {eventStatus === 'active' && (
               <Badge className="text-xs font-medium bg-green-500/10 text-green-600 border-green-500/20">
                 🔴 Live Now

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import kristuJayantiLogo from '@/assets/kristu-jayanti-logo.png';
 
 const navLinks = [
@@ -14,6 +15,13 @@ const navLinks = [
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAdminAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/student-login');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-header-dark border-b border-header-border">
@@ -43,6 +51,15 @@ const Header = () => {
                 {link.label}
               </Link>
             ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-header-text hover:text-header-accent hover:bg-header-border ml-2"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -76,6 +93,13 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
+              <button
+                onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
+                className="px-4 py-3 text-base font-medium rounded-lg transition-colors text-header-text hover:bg-header-border text-left flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
             </nav>
           </div>
         </div>

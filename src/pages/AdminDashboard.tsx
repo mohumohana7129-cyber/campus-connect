@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate('/admin-login');
   };
 
   const handleCreateEvent = (data: Omit<CollegeEvent, 'id'>) => {
@@ -122,7 +122,7 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-3">
             <Button variant="outline" size="sm" onClick={() => navigate('/home')}>
               <Calendar className="w-4 h-4 mr-2" />
-              View Site
+              Back to Website
             </Button>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />

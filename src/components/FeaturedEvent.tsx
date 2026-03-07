@@ -1,5 +1,6 @@
 import { Calendar, Clock, MapPin, Users, Sparkles } from 'lucide-react';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
+import { canRegister } from '@/lib/eventUtils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -33,12 +34,27 @@ const FeaturedEvent = ({ event, onViewDetails }: FeaturedEventProps) => {
               <span className="text-sm font-medium text-accent">Featured Event</span>
             </div>
             
-            <Badge 
-              variant="secondary" 
-              className={`${getCategoryColor(event.category)} text-xs font-medium px-2.5 py-0.5 mb-3`}
-            >
-              {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
-            </Badge>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <Badge 
+                variant="secondary" 
+                className={`${getCategoryColor(event.category)} text-xs font-medium px-2.5 py-0.5`}
+              >
+                {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
+              </Badge>
+              {event.availabilityStatus === 'Closed' ? (
+                <Badge variant="outline" className="text-xs font-medium border bg-destructive/10 text-destructive border-destructive/20">
+                  Registrations Closed
+                </Badge>
+              ) : event.availabilityStatus === 'Filling Fast' ? (
+                <Badge variant="outline" className="text-xs font-medium border bg-orange-500/10 text-orange-600 border-orange-500/20">
+                  Filling Fast
+                </Badge>
+              ) : (
+                <Badge variant="outline" className="text-xs font-medium border bg-green-500/10 text-green-600 border-green-500/20">
+                  Available
+                </Badge>
+              )}
+            </div>
 
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
               {event.title}
@@ -93,9 +109,15 @@ const FeaturedEvent = ({ event, onViewDetails }: FeaturedEventProps) => {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button size="lg" onClick={handleClick}>
-                Register Now
-              </Button>
+              {canRegister(event) ? (
+                <Button size="lg" onClick={handleClick}>
+                  Register Now
+                </Button>
+              ) : (
+                <Button size="lg" variant="secondary" disabled>
+                  Registrations Closed
+                </Button>
+              )}
               <Button variant="outline" size="lg" onClick={handleClick}>
                 Learn More
               </Button>

@@ -1,9 +1,9 @@
-import { Clock, MapPin, Users, ArrowRight, Bookmark, Share2 } from 'lucide-react';
+import { Clock, MapPin, ArrowRight, Bookmark, Share2 } from 'lucide-react';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
 import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon } from '@/lib/eventUtils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { toast } from 'sonner';
 import { toast } from 'sonner';
 
 interface EventListItemProps {

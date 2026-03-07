@@ -79,7 +79,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
               <Badge variant="outline" className="text-xs font-medium border bg-green-500/10 text-green-600 border-green-500/20">
                 Available
               </Badge>
-            )
+            )}
             {eventStatus === 'active' && (
               <Badge className="text-xs font-medium bg-green-500/10 text-green-600 border-green-500/20">
                 🔴 Live Now

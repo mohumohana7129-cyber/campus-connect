@@ -1,10 +1,9 @@
-import { Calendar, Clock, MapPin, Users, ArrowRight, Bookmark, Share2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, ArrowRight, Bookmark, Share2 } from 'lucide-react';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
 import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon, getEventStatus, canRegister } from '@/lib/eventUtils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 
 interface EventCardProps {
@@ -139,39 +138,20 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
             <span className="truncate">{event.venue}</span>
           </div>
 
-          {/* Registration count with progress bar - Fixed height */}
-          <div className="space-y-2 pt-1 min-h-[52px]">
-          <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-primary flex-shrink-0" />
-                <span className={`font-semibold ${seatStatus === 'full' ? 'text-destructive' : 'text-foreground'}`}>
-                  {event.attendees}
-                </span>
-                {event.maxCapacity && (
-                  <span className="text-muted-foreground">
-                    / {event.maxCapacity} seats
-                  </span>
-                )}
-              </div>
-              {event.availabilityStatus === 'Closed' ? (
-                <span className="text-xs font-medium text-destructive">Registrations Closed</span>
-              ) : event.maxCapacity ? (
-                <span className={`text-xs font-medium ${
-                  seatStatus === 'filling-fast' ? 'text-orange-600' : 'text-muted-foreground'
-                }`}>
-                  {seatStatus === 'filling-fast' ? 'Almost full!' : 
-                   `${Math.round(100 - seatPercentage)}% available`}
-                </span>
-              ) : null}
-            </div>
-            {event.maxCapacity && (
-              <Progress 
-                value={seatPercentage} 
-                className={`h-1.5 ${
-                  seatStatus === 'full' ? '[&>div]:bg-destructive' : 
-                  seatStatus === 'filling-fast' ? '[&>div]:bg-orange-500' : ''
-                }`}
-              />
+          {/* Event Status Badge */}
+          <div className="pt-1 min-h-[52px] flex items-center">
+            {event.availabilityStatus === 'Closed' ? (
+              <Badge variant="outline" className="text-xs font-medium border bg-destructive/10 text-destructive border-destructive/20">
+                Registrations Closed
+              </Badge>
+            ) : event.availabilityStatus === 'Filling Fast' ? (
+              <Badge variant="outline" className="text-xs font-medium border bg-orange-500/10 text-orange-600 border-orange-500/20">
+                Filling Fast
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="text-xs font-medium border bg-green-500/10 text-green-600 border-green-500/20">
+                Available
+              </Badge>
             )}
           </div>
         </div>

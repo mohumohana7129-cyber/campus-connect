@@ -1,9 +1,8 @@
-import { Clock, MapPin, Users, ArrowRight, Bookmark, Share2 } from 'lucide-react';
+import { Clock, MapPin, ArrowRight, Bookmark, Share2 } from 'lucide-react';
 import { CollegeEvent, getCategoryColor } from '@/lib/eventData';
 import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon } from '@/lib/eventUtils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { toast } from 'sonner';
 
 interface EventListItemProps {
@@ -116,30 +115,7 @@ const EventListItem = ({ event, onViewDetails, isBookmarked = false, onToggleBoo
               <MapPin className="w-4 h-4 text-primary/70" />
               <span className="truncate max-w-[150px]">{event.venue}</span>
             </div>
-            {/* Attendees */}
-            <div className="flex items-center gap-1.5">
-              <Users className="w-4 h-4 text-primary" />
-              <span className={`font-semibold ${seatStatus === 'full' ? 'text-destructive' : 'text-foreground'}`}>
-                {event.attendees}
-              </span>
-              {event.maxCapacity && (
-                <span className="text-muted-foreground">/ {event.maxCapacity}</span>
-              )}
-            </div>
           </div>
-
-          {/* Progress bar */}
-          {event.maxCapacity && (
-            <div className="pt-1">
-              <Progress 
-                value={seatPercentage} 
-                className={`h-1 max-w-xs ${
-                  seatStatus === 'full' ? '[&>div]:bg-destructive' : 
-                  seatStatus === 'filling-fast' ? '[&>div]:bg-orange-500' : ''
-                }`}
-              />
-            </div>
-          )}
         </div>
 
         {/* Action */}

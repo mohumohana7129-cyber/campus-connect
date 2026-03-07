@@ -118,7 +118,6 @@ const EventListItem = ({ event, onViewDetails, isBookmarked = false, onToggleBoo
             </div>
           </div>
         </div>
-        </div>
 
         {/* Action */}
         <div className="flex-shrink-0 flex items-center sm:pl-2">

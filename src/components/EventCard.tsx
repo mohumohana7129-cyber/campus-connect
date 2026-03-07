@@ -155,7 +155,6 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
               </Badge>
             )}
           </div>
-          </div>
         </div>
       </CardContent>
 

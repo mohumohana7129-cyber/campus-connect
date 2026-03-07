@@ -4,7 +4,6 @@ import { getSeatStatus, getSeatStatusConfig, shareEvent, getModeIcon } from '@/l
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { toast } from 'sonner';
 
 interface EventListItemProps {
   event: CollegeEvent;

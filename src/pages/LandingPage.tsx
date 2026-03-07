@@ -238,7 +238,7 @@ const LandingPage = () => {
 
           <div className="text-center mt-10">
             <Link to="/student-login">
-              <Button size="lg" className="bg-landing-gold hover:bg-landing-gold-light text-landing-navy font-semibold px-8" style={{ fontFamily: "'Georgia', serif" }}>
+              <Button size="lg" variant="outline" className="border-landing-gold/40 text-landing-gold hover:bg-landing-gold/10 px-8" style={{ fontFamily: "'Georgia', serif" }}>
                 Explore Events
               </Button>
             </Link>

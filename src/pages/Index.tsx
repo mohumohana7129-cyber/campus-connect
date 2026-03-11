@@ -59,9 +59,12 @@ const Index = () => {
       // Mode filter
       if (activeMode && event.mode !== activeMode) return false;
 
+      // Department filter
+      if (activeDepartment && event.department !== activeDepartment) return false;
+
       return true;
     });
-  }, [activeEvents, searchQuery, activeCategory, activeMode]);
+  }, [activeEvents, searchQuery, activeCategory, activeMode, activeDepartment]);
 
   const handleViewDetails = (event: CollegeEvent) => {
     setSelectedEvent(event);

@@ -21,6 +21,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<EventCategory | null>(null);
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
+  const [activeDepartment, setActiveDepartment] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const { isBookmarked, toggleBookmark } = useBookmarks();
@@ -58,9 +59,12 @@ const Index = () => {
       // Mode filter
       if (activeMode && event.mode !== activeMode) return false;
 
+      // Department filter
+      if (activeDepartment && event.department !== activeDepartment) return false;
+
       return true;
     });
-  }, [activeEvents, searchQuery, activeCategory, activeMode]);
+  }, [activeEvents, searchQuery, activeCategory, activeMode, activeDepartment]);
 
   const handleViewDetails = (event: CollegeEvent) => {
     setSelectedEvent(event);
@@ -121,9 +125,11 @@ const Index = () => {
               onSearch={setSearchQuery}
               onFilterCategory={setActiveCategory}
               onFilterMode={setActiveMode}
+              onFilterDepartment={setActiveDepartment}
               onViewChange={setViewMode}
               activeCategory={activeCategory}
               activeMode={activeMode}
+              activeDepartment={activeDepartment}
               currentView={viewMode}
             />
           </div>
@@ -165,6 +171,7 @@ const Index = () => {
                 setSearchQuery('');
                 setActiveCategory(null);
                 setActiveMode(null);
+                setActiveDepartment(null);
               }}
             >
               View All Events

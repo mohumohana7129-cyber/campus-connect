@@ -48,14 +48,14 @@ const LandingPage = () => {
             <Link to="/" className="flex items-center gap-3">
               <img
                 src={kristuJayantiLogo}
-                alt="Kristu Jayanti College"
-                className="h-14 w-auto"
+                alt="Kristu Jayanti University"
+                className="h-14 w-auto brightness-0 invert"
               />
               <div className="hidden sm:block">
                 <h1 className="text-landing-text font-bold text-lg leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
-                  Kristu Jayanti College
+                  Kristu Jayanti University
                 </h1>
-                <p className="text-landing-text-muted text-xs">Autonomous | Bengaluru</p>
+                <p className="text-landing-text-muted text-xs">University | Bengaluru</p>
               </div>
             </Link>
 
@@ -124,7 +124,7 @@ const LandingPage = () => {
             <div className="inline-flex items-center gap-2 bg-landing-navy-lighter/50 border border-landing-navy-lighter rounded-full px-4 py-1.5 mb-6">
               <GraduationCap className="w-4 h-4 text-landing-gold" />
               <span className="text-landing-text-muted text-sm" style={{ fontFamily: "'Georgia', serif" }}>
-                Kristu Jayanti College, Autonomous
+                Kristu Jayanti University
               </span>
             </div>
             <h2
@@ -176,7 +176,7 @@ const LandingPage = () => {
               About the Events Portal
             </h3>
             <p className="text-base md:text-lg leading-relaxed" style={{ fontFamily: "'Georgia', serif", color: 'hsl(220 20% 35%)' }}>
-              The Kristu Jayanti College Events Portal is the centralised platform for discovering, managing, and participating in academic, cultural, technical, and co-curricular events across all departments. Whether you're a student looking for the next hackathon, an organiser planning a workshop, or an administrator overseeing the event ecosystem — this is your hub.
+              The Kristu Jayanti University Events Portal is the centralised platform for discovering, managing, and participating in academic, cultural, technical, and co-curricular events across all departments. Whether you're a student looking for the next hackathon, an organiser planning a workshop, or an administrator overseeing the event ecosystem — this is your hub.
             </p>
           </div>
 
@@ -253,10 +253,10 @@ const LandingPage = () => {
             {/* College Info */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src={kristuJayantiLogo} alt="Kristu Jayanti College" className="h-12 w-auto" />
+                <img src={kristuJayantiLogo} alt="Kristu Jayanti University" className="h-12 w-auto" />
                 <div>
-                  <h4 className="text-landing-text font-bold" style={{ fontFamily: "'Georgia', serif" }}>Kristu Jayanti College</h4>
-                  <p className="text-landing-text-muted text-xs">Autonomous</p>
+                  <h4 className="text-landing-text font-bold" style={{ fontFamily: "'Georgia', serif" }}>Kristu Jayanti University</h4>
+                  <p className="text-landing-text-muted text-xs">University</p>
                 </div>
               </div>
               <p className="text-landing-text-muted text-sm leading-relaxed">
@@ -304,7 +304,7 @@ const LandingPage = () => {
 
           <div className="border-t border-landing-navy-lighter pt-6 text-center">
             <p className="text-landing-text-muted text-xs">
-              © {new Date().getFullYear()} Kristu Jayanti College, Autonomous. All rights reserved.
+              © {new Date().getFullYear()} Kristu Jayanti University. All rights reserved.
             </p>
           </div>
         </div>

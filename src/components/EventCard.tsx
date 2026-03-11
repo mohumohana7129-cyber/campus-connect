@@ -138,22 +138,7 @@ const EventCard = ({ event, onViewDetails, isBookmarked = false, onToggleBookmar
             <span className="truncate">{event.venue}</span>
           </div>
 
-          {/* Event Status Badge */}
-          <div className="pt-1 min-h-[52px] flex items-center">
-            {event.availabilityStatus === 'Closed' ? (
-              <Badge variant="outline" className="text-xs font-medium border bg-destructive/10 text-destructive border-destructive/20">
-                Registrations Closed
-              </Badge>
-            ) : event.availabilityStatus === 'Filling Fast' ? (
-              <Badge variant="outline" className="text-xs font-medium border bg-orange-500/10 text-orange-600 border-orange-500/20">
-                Filling Fast
-              </Badge>
-            ) : (
-              <Badge variant="outline" className="text-xs font-medium border bg-green-500/10 text-green-600 border-green-500/20">
-                Available
-              </Badge>
-            )}
-          </div>
+
         </div>
       </CardContent>
 

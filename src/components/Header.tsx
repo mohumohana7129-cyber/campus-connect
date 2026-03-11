@@ -32,7 +32,7 @@ const Header = () => {
             <img 
               src={kristuJayantiLogo} 
               alt="Kristu Jayanti University" 
-              className="h-16 w-auto"
+              className="h-16 w-auto brightness-0 invert"
             />
           </Link>
 

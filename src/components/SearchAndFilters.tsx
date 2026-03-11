@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import { Search, Filter, Calendar, LayoutGrid, List, X } from 'lucide-react';
+import { Search, Filter, LayoutGrid, List, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { categories, EventCategory, EventMode } from '@/lib/eventData';
+import { DEPARTMENTS } from '@/contexts/AdminAuthContext';
 
 interface SearchAndFiltersProps {
   onSearch: (query: string) => void;
   onFilterCategory: (category: EventCategory | null) => void;
   onFilterMode: (mode: EventMode | null) => void;
+  onFilterDepartment?: (department: string | null) => void;
   onViewChange: (view: 'grid' | 'list') => void;
   activeCategory: EventCategory | null;
   activeMode: EventMode | null;
+  activeDepartment?: string | null;
   currentView: 'grid' | 'list';
 }
 
@@ -19,9 +23,11 @@ const SearchAndFilters = ({
   onSearch,
   onFilterCategory,
   onFilterMode,
+  onFilterDepartment,
   onViewChange,
   activeCategory,
   activeMode,
+  activeDepartment,
   currentView,
 }: SearchAndFiltersProps) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,11 +41,12 @@ const SearchAndFilters = ({
   const clearFilters = () => {
     onFilterCategory(null);
     onFilterMode(null);
+    onFilterDepartment?.(null);
     setSearchQuery('');
     onSearch('');
   };
 
-  const hasActiveFilters = activeCategory || activeMode || searchQuery;
+  const hasActiveFilters = activeCategory || activeMode || activeDepartment || searchQuery;
 
   return (
     <div className="space-y-4">
@@ -135,6 +142,27 @@ const SearchAndFilters = ({
                 ))}
               </div>
             </div>
+
+            {/* Department */}
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Department</p>
+              <Select
+                value={activeDepartment || 'all'}
+                onValueChange={(val) => onFilterDepartment?.(val === 'all' ? null : val)}
+              >
+                <SelectTrigger className="w-full sm:w-72">
+                  <SelectValue placeholder="All Departments" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Departments</SelectItem>
+                  {DEPARTMENTS.map((dept) => (
+                    <SelectItem key={dept} value={dept}>
+                      {dept}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       )}
@@ -153,6 +181,12 @@ const SearchAndFilters = ({
             <Badge variant="secondary" className="gap-1">
               {activeMode}
               <X className="w-3 h-3 cursor-pointer" onClick={() => onFilterMode(null)} />
+            </Badge>
+          )}
+          {activeDepartment && (
+            <Badge variant="secondary" className="gap-1">
+              {activeDepartment}
+              <X className="w-3 h-3 cursor-pointer" onClick={() => onFilterDepartment?.(null)} />
             </Badge>
           )}
           {searchQuery && (

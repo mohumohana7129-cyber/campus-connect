@@ -125,9 +125,11 @@ const Index = () => {
               onSearch={setSearchQuery}
               onFilterCategory={setActiveCategory}
               onFilterMode={setActiveMode}
+              onFilterDepartment={setActiveDepartment}
               onViewChange={setViewMode}
               activeCategory={activeCategory}
               activeMode={activeMode}
+              activeDepartment={activeDepartment}
               currentView={viewMode}
             />
           </div>

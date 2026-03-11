@@ -51,12 +51,6 @@ const LandingPage = () => {
                 alt="Kristu Jayanti University"
                 className="h-14 w-auto brightness-0 invert"
               />
-              <div className="hidden sm:block">
-                <h1 className="text-landing-text font-bold text-lg leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
-                  Kristu Jayanti University
-                </h1>
-                <p className="text-landing-text-muted text-xs">University | Bengaluru</p>
-              </div>
             </Link>
 
             <nav className="flex items-center gap-1">

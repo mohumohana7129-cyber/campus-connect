@@ -124,7 +124,7 @@ const LandingPage = () => {
             <div className="inline-flex items-center gap-2 bg-landing-navy-lighter/50 border border-landing-navy-lighter rounded-full px-4 py-1.5 mb-6">
               <GraduationCap className="w-4 h-4 text-landing-gold" />
               <span className="text-landing-text-muted text-sm" style={{ fontFamily: "'Georgia', serif" }}>
-                Kristu Jayanti College, Autonomous
+                Kristu Jayanti University
               </span>
             </div>
             <h2

@@ -21,6 +21,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<EventCategory | null>(null);
   const [activeMode, setActiveMode] = useState<EventMode | null>(null);
+  const [activeDepartment, setActiveDepartment] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [selectedEvent, setSelectedEvent] = useState<CollegeEvent | null>(null);
   const { isBookmarked, toggleBookmark } = useBookmarks();

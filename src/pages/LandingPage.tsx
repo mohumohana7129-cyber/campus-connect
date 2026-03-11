@@ -304,7 +304,7 @@ const LandingPage = () => {
 
           <div className="border-t border-landing-navy-lighter pt-6 text-center">
             <p className="text-landing-text-muted text-xs">
-              © {new Date().getFullYear()} Kristu Jayanti College, Autonomous. All rights reserved.
+              © {new Date().getFullYear()} Kristu Jayanti University. All rights reserved.
             </p>
           </div>
         </div>

@@ -171,6 +171,7 @@ const Index = () => {
                 setSearchQuery('');
                 setActiveCategory(null);
                 setActiveMode(null);
+                setActiveDepartment(null);
               }}
             >
               View All Events

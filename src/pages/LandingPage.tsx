@@ -253,10 +253,10 @@ const LandingPage = () => {
             {/* College Info */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src={kristuJayantiLogo} alt="Kristu Jayanti College" className="h-12 w-auto" />
+                <img src={kristuJayantiLogo} alt="Kristu Jayanti University" className="h-12 w-auto" />
                 <div>
-                  <h4 className="text-landing-text font-bold" style={{ fontFamily: "'Georgia', serif" }}>Kristu Jayanti College</h4>
-                  <p className="text-landing-text-muted text-xs">Autonomous</p>
+                  <h4 className="text-landing-text font-bold" style={{ fontFamily: "'Georgia', serif" }}>Kristu Jayanti University</h4>
+                  <p className="text-landing-text-muted text-xs">University</p>
                 </div>
               </div>
               <p className="text-landing-text-muted text-sm leading-relaxed">

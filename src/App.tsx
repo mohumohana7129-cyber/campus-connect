@@ -37,7 +37,7 @@ const App = () => (
             <Route 
               path="/home" 
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['student', 'organizer', 'admin']}>
                   <Index />
                 </ProtectedRoute>
               } 
@@ -45,7 +45,7 @@ const App = () => (
             <Route 
               path="/events" 
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['student', 'organizer', 'admin']}>
                   <Events />
                 </ProtectedRoute>
               } 
@@ -53,7 +53,7 @@ const App = () => (
             <Route 
               path="/calendar" 
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['student', 'organizer', 'admin']}>
                   <Calendar />
                 </ProtectedRoute>
               } 
@@ -61,7 +61,7 @@ const App = () => (
             <Route 
               path="/about" 
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['student', 'organizer', 'admin']}>
                   <About />
                 </ProtectedRoute>
               } 

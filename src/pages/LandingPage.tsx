@@ -48,8 +48,8 @@ const LandingPage = () => {
             <Link to="/" className="flex items-center gap-3">
               <img
                 src={kristuJayantiLogo}
-                alt="Kristu Jayanti College"
-                className="h-14 w-auto"
+                alt="Kristu Jayanti University"
+                className="h-14 w-auto brightness-0 invert"
               />
               <div className="hidden sm:block">
                 <h1 className="text-landing-text font-bold text-lg leading-tight" style={{ fontFamily: "'Georgia', serif" }}>

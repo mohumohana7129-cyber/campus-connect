@@ -53,9 +53,9 @@ const LandingPage = () => {
               />
               <div className="hidden sm:block">
                 <h1 className="text-landing-text font-bold text-lg leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
-                  Kristu Jayanti College
+                  Kristu Jayanti University
                 </h1>
-                <p className="text-landing-text-muted text-xs">Autonomous | Bengaluru</p>
+                <p className="text-landing-text-muted text-xs">University | Bengaluru</p>
               </div>
             </Link>
 
